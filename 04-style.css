@@ -1,0 +1,514 @@
+/* ===============================
+CONTROLE GERAL DE FONTE
+=============================== */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* ===============================
+RESET GERAL
+=============================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+    font-family:"Poppins", sans-serif;
+}
+
+
+body{
+    height:100vh;
+    background: url(images/fulbck.jpg) no-repeat center center fixed;
+    background-size: cover;
+    background-position: center;
+    backdrop-filter: blur(10px);
+    color:white;
+    padding:20px;
+}
+
+img{ 
+    height: 0vh;
+    display: none;
+    justify-content: center;
+}
+
+/* ===============================
+TÍTULO PRINCIPAL
+=============================== */
+
+h1{
+    margin-bottom:20px;
+    font-size:28px;
+    font-weight:bold;
+}
+
+
+/* ===============================
+LAYOUT PRINCIPAL - CONTROLA O CONTEUDO CENTRAL DA TELA
+=============================== */
+
+.container{
+    display:grid;
+    grid-template-columns:450px 1fr;
+    gap:30px;
+}
+
+
+/* ===============================
+CARDS
+=============================== */
+
+#formCard{
+    
+    display:none;
+    
+}
+
+/* ===============================
+LAYOUT DE TOP - PRETENDO ADICIONAR MAIS FUNÇÕES NESTA ABA 
+=============================== */
+
+.overlay{
+    width: 50vh;
+    padding:10px;
+    display:flex;
+    margin-bottom: 1vh;
+
+}
+
+.card1{
+    width: 50vh;
+    margin-top: 25px;
+    backdrop-filter: blur(30px);
+    background: rgba(19, 18, 18, 0.267);
+    border: 2px solid white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,.3);
+}
+
+.card{
+    width: auto;
+    margin-top: 25px;
+    backdrop-filter: blur(30px);
+    background: rgba(31, 30, 30, 0.267);
+    border: 2px solid white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,.3);
+}
+
+.card h2{
+    margin-bottom:15px;
+    font-size:20px;
+}
+
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:12px;
+    border:1px solid white;
+    border-radius:12px;
+    backdrop-filter: blur(30px);
+    background: rgba(0, 0, 0, 0.363);
+    color:white;
+    outline:none;
+    font-size:14px;
+}
+
+
+/* ===============================
+FOCUS DOS CAMPOS AO CLICAR 
+=============================== */
+
+input:focus,
+select:focus,
+textarea:focus{
+    border:2px solid #2563eb;
+    transition:0.2s;
+}
+
+
+/* ===============================
+AREAS DE TEXTO
+=============================== */
+
+textarea{
+    resize:none;
+    height:100px;
+    transition:0.2s;
+}
+
+textarea:focus{
+    height:150px;
+    transition:0.2s;
+}
+
+.clientArea{
+    height: 50px;
+}
+
+
+/* ===============================
+BOTÕES
+=============================== */
+
+.mainBtn{
+    text-align: center;
+    margin: 8px 12vh;
+    width:20vh;
+    height:45px;
+    padding:10px;
+    border:2px solid white;
+    border-radius:8px;
+    background:#0041f3;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:14px;
+    border-radius:25px;
+    transition: transform 0.2 ease;
+
+}
+
+.mainBtn:hover{
+    background:#002975;
+    transform: scale(1.10);
+}
+
+.exportBtn{
+    text-align: center;
+    margin: 8px 12vh;
+    width:20vh;
+    height:45px;
+    padding:10px;
+    border:2px solid white;
+    border-radius:8px;
+    background:#00884f;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+    font-size:14px;
+    border-radius:25px;
+    transition: transform 0.2 ease;
+}
+
+.exportBtn:hover{
+    background:#005230;
+    transform: scale(1.10);
+}
+
+.saveBtn{
+    text-align: center;
+    margin: 8px 12vh;
+    width:20vh;
+    height:45px;
+    padding:10px;
+    border:2px solid white;
+    border-radius:8px;
+    background:#0041f3;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+    font-size:14px;
+    border-radius:25px;
+    transition: transform 0.2 ease;
+}
+
+.saveBtn:hover{
+    background:#002975;
+    transform: scale(1.10);
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#005ce6;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+    font-size:14px;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+
+/* ===============================
+TOPO DA TABELA
+=============================== */
+
+.topo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    gap:10px;
+}
+
+.topo input{
+    margin:0;
+}
+
+
+/* ===============================
+TABELA
+=============================== */
+
+table{
+    align-items: column;
+    width:100%;
+    border-collapse:collapse;
+}
+
+
+/* ===============================
+CABEÇALHO E CÉLULAS
+=============================== */
+
+th,
+td{
+    padding:12px;
+    text-align:left;
+    border-bottom:1px solid rgb(42, 42, 42);
+    font-size:14px;
+}
+
+
+/* ===============================
+CABEÇALHO
+=============================== */
+
+.tableHead{
+    padding: 100px;
+    color:#ffffff;
+}
+
+
+/* ===============================
+LINHAS DA TABELA
+=============================== */
+
+tbody tr{
+    transition:0.2s;
+}
+
+tbody tr:hover{
+    background:#ffffff36;
+}
+
+
+/* ===============================
+STATUS
+=============================== */
+
+.status{
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+    display:inline-block;
+}
+
+
+/* ===============================
+STATUS PENDENTE
+=============================== */
+
+.Pendente{
+    background:#facc15;
+    color:rgb(255, 255, 255);
+}
+
+
+/* ===============================
+STATUS CONCLUÍDO
+=============================== */
+
+.Reentregar{
+    background:#22c55e;
+    color:white;
+}
+
+
+/* ===============================
+STATUS PROBLEMA
+=============================== */
+
+.DarEntrada{
+    background:#ef4444;
+    color:white;
+}
+
+
+/* ===============================
+ÁREA DE AÇÕES
+=============================== */
+
+.acoes button{
+    width:auto;
+    padding:6px 10px;
+    margin-right:5px;
+    font-size:12px;
+}
+
+
+/* ===============================
+BOTÃO EXCLUIR
+=============================== */
+
+.delete{
+    background:#dc2626;
+}
+
+.delete:hover{
+    background:#b91c1c;
+}
+
+.deleteBtn{
+    background-color:#ff0000;
+    border-radius: 15px;
+    color: white;
+    background-color: red;
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 2px solid #ffffff;
+    transition: transform 0.2 ease;
+}
+
+.deleteBtn:hover{
+    transform: scale(1.10);
+    background-color: rgb(160, 0, 0);
+}
+
+/* ===============================
+BOTÃO PARA EDITAR LINHAS DE OCORRÊNCIAS
+=============================== */
+
+.editBtn{
+    border-radius: 15px;
+    color: white;
+    background-color: rgb(0, 106, 255);
+    border: 2px solid #ffffff;
+    padding: 6px 10px;
+    font-size: 12px;
+    transition: transform 0.2 ease;
+}
+
+.editBtn:hover{
+    transform: scale(1.10);
+    background-color: rgb(0, 73, 174);
+}
+
+/* ===============================
+DASHBOARD
+=============================== */
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+
+/* ===============================
+BOXES DO DASHBOARD
+=============================== */
+
+.dashboard .box{
+    background:rgb(42, 42, 42);
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 0 10px rgba(0,0,0,.3);
+}
+
+
+/* ===============================
+TÍTULOS DASHBOARD
+=============================== */
+
+.dashboard h3{
+    font-size:14px;
+    margin-bottom:10px;
+    color:#94a3b8;
+}
+
+
+/* ===============================
+NÚMEROS DASHBOARD
+=============================== */
+
+.dashboard p{
+    font-size:28px;
+    font-weight:bold;
+}
+
+/* ===============================
+SEÇÃO DA MAIN PAGE - MAINPAGE.HTML
+=============================== */
+
+.boxOne{
+    height: 100px;
+    width: 40vh;
+    background: rgba(19, 18, 18, 0.267);
+    align-items: center;
+    margin: 30vh 75vh;
+    padding: 15px 50px;
+    display: grid;
+    justify-content: center;
+    border-radius: 20px; 
+    border: 1px solid white;       
+
+}
+
+.logo2{
+    height: 350px;
+    display: block;
+    margin: -140px -85px;
+    justify-content: center;
+    top: 100px;
+    padding: 5px;
+}
+
+/* ===============================
+BOTOES
+=============================== */
+
+.dashBtn{
+    justify-content: space-between;
+    width:20vh;
+    height:45px;
+    margin: 50px 55px;
+    padding:10px;
+    border:2px solid white;
+    border-radius:8px;
+    background:#0041f3;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:14px;
+    border-radius:25px;
+    transition: transform 0.2 ease;
+}
+
+.dashBtn:hover{
+    background:#002975;
+    transform: scale(1.10);
+}
+
+.line2{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
