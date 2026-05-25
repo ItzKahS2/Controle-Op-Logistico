@@ -13,7 +13,7 @@
 <h1>📦 Controle Operacional Logístico</h1>
 
 <div class="overlay">
-    <a class="mainBtn" href="mainpage.html">
+    <a class="mainBtn" href="01-mainpage.html">
     <i class="bi bi-house-door"></i>
     Início
     </a>
@@ -21,7 +21,6 @@
 
 <div class="container">
 
-        
     <div class="card1" id = "formCard">
 
         <h2>Nova Ocorrência</h2>
@@ -48,6 +47,12 @@
             <option value="DarEntrada">Dar Entrada</option>
         </select>
 
+        <button class="importBtn" onclick="document.getElementById('importarXls').click()">
+         <i class="bi bi-file-earmark-arrow-up"></i>
+           Importar XLS
+      </button>
+
+       <input type="file" id="importarXls"accept=".xlsx, .xls" style="display: none;">
 
         <button class="saveBtn" onclick="adicionarOcorrencia()">
             <i class="bi bi-floppy"></i>
