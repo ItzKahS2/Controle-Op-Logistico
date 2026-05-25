@@ -2,8 +2,7 @@
 // BANCO DE DADOS TEMPORÁRIO
 // ===============================
 
-let ocorrencias =
-    JSON.parse(localStorage.getItem("ocorrencias")) || []
+let ocorrencias = JSON.parse(localStorage.getItem("ocorrencias")) || []
 
 
 // ===============================
@@ -17,10 +16,7 @@ let idEmEdicao = null
 // ===============================
 function salvarLocalStorage(){
 
-    localStorage.setItem(
-        "ocorrencias",
-        JSON.stringify(ocorrencias)
-    )
+    localStorage.setItem("ocorrencias",JSON.stringify(ocorrencias))
 }
 
 
@@ -262,7 +258,7 @@ function editarOcorrencia(id){
 
 
 // ===============================
-        // DELETAR OCORRÊNCIA APENAS QUANDO FOR SELECIONADA
+    // DELETAR OCORRÊNCIA APENAS QUANDO FOR SELECIONADA
 // ===============================
 
  function deletarOcorrencia(id){
@@ -364,4 +360,118 @@ function exportXls(){
 
         "Ocorrencias_Logistica.xlsx"
     )
+}
+
+
+// ==========================================
+// IMPORTAR ARQUIVO
+// ==========================================
+
+document
+    .getElementById("importarXls")
+    .addEventListener("change", importarPlanilha)
+
+
+
+function importarPlanilha(event){
+
+    const arquivo = event.target.files[0]
+
+    if(!arquivo){
+
+        alert("Nenhum arquivo selecionado.")
+
+        return
+    }
+
+    const leitor = new FileReader()
+
+    
+    // ===============================
+    // LER ARQUIVO
+    // ===============================
+
+    leitor.onload = function(e){
+
+        const dados = new Uint8Array(e.target.result)
+
+        
+        // ===============================
+        // LER WORKBOOK
+        // ===============================
+
+        const workbook = XLSX.read(dados, {
+            type: "array"
+        })
+
+        
+        // ===============================
+        // PEGAR PRIMEIRA PLANILHA
+        // ===============================
+
+        const primeiraAba =
+            workbook.SheetNames[0]
+
+        const planilha =
+            workbook.Sheets[primeiraAba]
+
+        
+        // ===============================
+        // CONVERTER PARA JSON
+        // ===============================
+
+        const dadosPlanilha =
+            XLSX.utils.sheet_to_json(planilha)
+
+        console.log(dadosPlanilha)
+
+        
+        // ===============================
+        // ADICIONAR DADOS AO ARRAY
+        // ===============================
+
+        dadosPlanilha.forEach(item => {
+
+            ocorrencias.push({
+
+                id: Date.now() + Math.random(),
+
+                nf: item.NF || "",
+
+                cliente: item.CLIENTE || "",
+
+                transportadora:
+                    item.TRANSPORTADORA || "",
+
+                tipo: item.TIPO || "",
+
+                status: item.AÇÃO || "Pendente",
+
+                mtv: item.MOTIVO || "",
+
+                data:
+                    item.DATA ||
+                    new Date().toLocaleString("pt-BR")
+            })
+
+        })
+
+        
+        // ===============================
+        // SALVAR E RENDERIZAR
+        // ===============================
+
+        salvarLocalStorage()
+
+        renderizarTabela()
+
+        alert("Planilha importada com sucesso!")
+    }
+
+    
+    // ===============================
+    // LER COMO ARRAY BUFFER
+    // ===============================
+
+    leitor.readAsArrayBuffer(arquivo)
 }
