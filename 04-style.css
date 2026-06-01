@@ -635,7 +635,7 @@ LAYOUT DE TOAST DE DESFAZER AÇÃO
 
 .undo-toast{
     position: fixed;
-    top: 20px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%) translateY(120px);
     background: #1f2937;
