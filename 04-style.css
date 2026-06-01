@@ -638,15 +638,20 @@ LAYOUT DE TOAST DE DESFAZER AÇÃO
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%) translateY(120px);
-    background: #1f2937;
+    background: rgb(0, 102, 255);
     color: white;
     padding: 14px 18px;
-    border-radius: 12px;
+    border-radius: 32px;
     display: flex;
     align-items: center;
     gap: 15px;
-    min-width: 350px;
-    box-shadow: 0 10px 25px rgba(0,0,0,.3);
+    min-width: 440px;
+    height: 80px;
+    border-top:1px solid rgb(255, 255, 255);
+    border-left:1px solid rgba(255, 255, 255, 0.753);
+    border-right:1px solid rgba(255, 255, 255, 0.541);
+    border-bottom:1px solid rgba(255, 255, 255, 0.418);
+    box-shadow: inset 0 0 10px rgba(255,255,255,.3);
     opacity: 0;
     transition: .35s ease;
     overflow: hidden;
@@ -661,7 +666,7 @@ LAYOUT DE TOAST DE DESFAZER AÇÃO
 .undo-toast button{
     border: none;
     background: transparent;
-    color: #60a5fa;
+    color: #ffffff;
     font-weight: bold;
     cursor: pointer;
 }
@@ -674,7 +679,7 @@ LAYOUT DE TOAST DE DESFAZER AÇÃO
     width: 100%;
     height: 4px;
 
-    background: #3b82f6;
+    background: #ffffff;
 
     transform-origin: left;
 }
