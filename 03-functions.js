@@ -121,6 +121,10 @@ if(idEmEdicao !== null){
     }
 
     idEmEdicao = null
+    
+    document
+    .getElementById("formCard")
+    .classList.remove("editando")
 
 }else{
 
@@ -288,6 +292,9 @@ function editarOcorrencia(id){
         document.getElementById("cliente").value = ocorrencia.cliente
 
         idEmEdicao = id;
+        document
+        .getElementById("formCard")
+        .classList.add("editando")
 
         openForm()
     }
@@ -411,7 +418,7 @@ function desfazerExclusao(){
 
     salvarLocalStorage()
 
-    renderizarTabela()
+    renderizarTabela()          
 
     backupOcorrencias = null
 
