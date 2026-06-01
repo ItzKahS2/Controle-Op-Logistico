@@ -130,6 +130,32 @@ CARD FORMULÁRIO
     box-shadow:0 0 10px rgba(0,0,0,.3);
 }
 
+/* ===============================
+MODO EDIÇÃO
+=============================== */
+
+.card1.editando{
+
+    animation: editPulse 1.5s infinite alternate;
+
+    border: 1px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        0 0 15px rgba(255,255,255,.25),
+        0 0 30px rgba(255,255,255,.15);
+}
+
+@keyframes editPulse{
+
+    from{
+        background-color: rgb(0, 102, 255);
+    }
+
+    to{
+        background-color: rgb(40, 130, 255);
+    }
+}
+
 
 /* ===============================
 CARD TABELA
@@ -609,7 +635,7 @@ LAYOUT DE TOAST DE DESFAZER AÇÃO
 
 .undo-toast{
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%) translateY(120px);
     background: #1f2937;
@@ -633,16 +659,11 @@ LAYOUT DE TOAST DE DESFAZER AÇÃO
 }
 
 .undo-toast button{
-    width:auto;
-    height:auto;
-    margin:0;
-    padding:0;
-    border:none;
-    background:transparent;
-    color:#60a5fa;
-    font-weight:bold;
-    cursor:pointer;
-    box-shadow:none;
+    border: none;
+    background: transparent;
+    color: #60a5fa;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .undo-progress{
