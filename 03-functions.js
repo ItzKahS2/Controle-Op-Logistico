@@ -10,6 +10,13 @@ let ocorrencias = JSON.parse(localStorage.getItem("ocorrencias")) || []
 // ===============================
 
 let idEmEdicao = null
+let backupOcorrencias = null
+let undoTimeout = null
+
+// ====== CONFIGURAÇÃO DO PISCAR ======
+const BLINK_DURATION = 0.9 // segundos
+const BLINK_COUNT = 1 // número de repetições
+const BLINK_OPACITY = 0.3 // opacidade da cor (0..1)
 
 // ===============================
 // FUNÇÃO PARA ADICIONAR OCORRÊNCIA
@@ -17,6 +24,30 @@ let idEmEdicao = null
 function salvarLocalStorage(){
 
     localStorage.setItem("ocorrencias",JSON.stringify(ocorrencias))
+}
+
+// ===============================
+// NOVAS LINHAS ADICIONADAS PISCAM EM ALGUMA COR SELECIONADA 
+// ===============================
+function randomColor(){
+    const r = Math.floor(Math.random()*255)
+    const g = Math.floor(Math.random()*255)
+    const b = Math.floor(Math.random()*255)
+     return `rgba(${r},${g},${b},${BLINK_OPACITY})`
+}
+
+function highlightRow(id){
+    const row = document.querySelector(`tr[data-id="${id}"]`)
+    if(!row) return
+    const color = randomColor()
+    row.style.setProperty('--blink-color', color)
+    row.style.animation = `blink ${BLINK_DURATION}s ease-in-out 0s ${BLINK_COUNT}`
+    row.classList.add('blink-highlight')
+    row.addEventListener('animationend', ()=>{
+        row.classList.remove('blink-highlight')
+        row.style.removeProperty('--blink-color')
+        row.style.removeProperty('animation')
+    }, { once: true })
 }
 
 
@@ -44,6 +75,8 @@ function adicionarOcorrencia(){
 
     const cliente =
         document.getElementById("cliente").value
+
+    let newAddedId = null
 
    
 
@@ -111,8 +144,8 @@ if(idEmEdicao !== null){
     }
 
     ocorrencias.push(ocorrencia)
+    newAddedId = ocorrencia.id
 }
-
 
     // ===============================
     // SALVAR OCORRÊNCIA NO ARRAY
@@ -132,6 +165,9 @@ if(idEmEdicao !== null){
     // ===============================
 
     renderizarTabela()
+    if(newAddedId){
+        setTimeout(()=> highlightRow(newAddedId), 50)
+    }
 }
 
 // ===============================
@@ -184,7 +220,8 @@ function renderizarTabela(){
         // ===============================
 
         const linha =
-            document.createElement("tr")
+            document.createElement("tr");
+        linha.dataset.id = item.id
 
 
         // ===============================
@@ -208,7 +245,7 @@ function renderizarTabela(){
             <td>${item.data}</td>
 
             <td>
-                <button class="deleteBtn" onclick="deletarOcorrencia(${item.id})">
+                <button class="deleteBtn" onclick="deletarOcorrencia('${item.id}')">
                 <i class="bi bi-trash-fill"></i>
                     Deletar
                 </button>
@@ -261,21 +298,129 @@ function editarOcorrencia(id){
     // DELETAR OCORRÊNCIA APENAS QUANDO FOR SELECIONADA
 // ===============================
 
- function deletarOcorrencia(id){
+function deletarOcorrencia(id){
+
+    const idString = String(id)
+
+    const index =
+        ocorrencias.findIndex(
+            item => String(item.id) === idString
+        )
+
+    if(index === -1){
+
+        alert("Ocorrência não encontrada.")
+
+        return
+    }
+
+    if(confirm("Tem certeza que deseja deletar a ocorrência selecionada?")){
+
+        backupOcorrencias = [...ocorrencias]
+
+        ocorrencias.splice(index, 1)
+
+        salvarLocalStorage()
+
+        renderizarTabela()
+
+        mostrarUndo("Ocorrência removida.")
+    }
+}
+
+// ===============================
+// DELETAR DELETAR TODAS AS OCORRÊNCIAS 
+// ===============================
+
+function delAll(){
 
     if(ocorrencias.length === 0){
 
-        alert("Não há ocorrências para deletar.")   
+        alert("Não há ocorrências para apagar.")
+
+        return
     }
-        else{
-            if(confirm("Tem certeza que deseja deletar a ocorrência selecionada?")){
-                ocorrencias.pop();
-                salvarLocalStorage();
-                renderizarTabela();
-            }
-        }
+
+    if(confirm("Tem certeza que deseja apagar todas as ocorrências?")){
+
+        backupOcorrencias = [...ocorrencias]
+
+        ocorrencias = []
+
+        salvarLocalStorage()
+
+        renderizarTabela()
+
+        mostrarUndo("Todas as ocorrências foram removidas.")
+    }
 }
 
+// ===============================
+// DESFAZER AÇÃO DE DELETAR 
+// ===============================
+
+function mostrarUndo(mensagem){
+
+    const toast =
+        document.getElementById("undoToast")
+
+    if(!toast){
+        console.error("Elemento #undoToast não encontrado.")
+        return
+    }
+
+    const progress =
+        toast.querySelector(".undo-progress")
+
+    document.getElementById(
+        "undoMessage"
+    ).textContent = mensagem
+
+    toast.classList.add("show")
+
+    progress.classList.remove("animate")
+
+    void progress.offsetWidth
+
+    progress.classList.add("animate")
+
+    clearTimeout(undoTimeout)
+
+    undoTimeout = setTimeout(() => {
+
+        backupOcorrencias = null
+
+        toast.classList.remove("show")
+
+    }, 5000)
+}
+
+
+
+// ===============================
+// DESFAZER EXCLUSÃO
+// ===============================
+
+function desfazerExclusao(){
+
+    if(!backupOcorrencias){
+        return
+    }
+
+    ocorrencias = [...backupOcorrencias]
+
+    salvarLocalStorage()
+
+    renderizarTabela()
+
+    backupOcorrencias = null
+
+    clearTimeout(undoTimeout)
+
+    document
+        .getElementById("undoToast")
+        .classList.remove("show")
+}
 
 // ===============================
 // RENDERIZAR DADOS AO ABRIR
@@ -289,9 +434,9 @@ renderizarTabela()
 
 function exportXls(){
 
-     // ==========================================
-    // FORMATAR DADOS
-    // ==========================================
+// ==========================================
+// FORMATAR DADOS
+// ==========================================
 
     const dadosFormatados =
 
@@ -312,8 +457,6 @@ function exportXls(){
             "MOTIVO": item.mtv,
 
         }))
-
-
 
     // ==========================================
     // CRIAR PLANILHA
