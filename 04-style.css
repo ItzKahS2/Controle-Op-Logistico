@@ -23,7 +23,7 @@ BODY PRINCIPAL
 
 body{
     min-height:100vh;
-    background: url(images/fulbck.jpg) no-repeat center center fixed;
+    background-color: rgb(0, 95, 238);
     background-size: cover;
     background-position: center;
     backdrop-filter: blur(10px);
@@ -61,13 +61,19 @@ CONTROLA O CONTEÚDO CENTRAL
 
 .container{
     display:grid;
-
-    /* RESPONSIVO */
     grid-template-columns:minmax(320px, 420px) 1fr;
-
     gap:30px;
     width:100%;
     align-items:start;
+}
+
+.container-contagem{
+    display:grid;
+    grid-template-columns:minmax(420px, 420px) 1fr;
+    gap:30px;
+    width:100%;
+    align-items:start;
+
 }
 
 
@@ -81,39 +87,46 @@ CARDS
 
 
 /* ===============================
-ÁREA SUPERIOR
+ÁREA SUPERIOR - HUB
 =============================== */
 
 .overlay{
+    display:grid;
+    justify-content:start;
+    align-items:center;
     width:100%;
+    max-width:320px;
+    max-height:55px;
     padding:10px;
     display:flex;
+    margin-left:7vh;
     margin-bottom: 1vh;
+    background-color: rgb(0, 102, 255);
+    border-top:1px solid rgb(255, 255, 255);
+    border-left:1px solid rgba(255, 255, 255, 0.753);
+    border-right:1px solid rgba(255, 255, 255, 0.541);
+    border-bottom:1px solid rgba(255, 255, 255, 0.418);
+    box-shadow: inset 0 0 10px rgba(255,255,255,.3);
+    border-radius:32px;
 }
-
-
+    
+  
 /* ===============================
 CARD FORMULÁRIO
 =============================== */
 
 .card1{
-
-    /* RESPONSIVO */
     width:100%;
     max-width:420px;
-
     margin-top: 25px;
-
-    backdrop-filter: blur(30px);
-
-    background: rgba(19, 18, 18, 0.267);
-
-    border: 2px solid white;
-
+    background-color: rgb(0, 102, 255);
+    border-top:1px solid rgba(255, 255, 255, 0.479);
+    border-left:1px solid rgba(255, 255, 255, 0.418);
     padding:20px;
-
-    border-radius:12px;
-
+    border-radius:32px;
+    box-shadow:0 0 10px rgba(0,0,0,.3);
+    padding:20px;
+    border-radius:32px;
     box-shadow:0 0 10px rgba(0,0,0,.3);
 }
 
@@ -123,24 +136,15 @@ CARD TABELA
 =============================== */
 
 .card{
-
     width: 100%;
-
     margin-top: 25px;
-
-    backdrop-filter: blur(30px);
-
-    background: rgba(31, 30, 30, 0.267);
-
-    border: 2px solid white;
-
+    background-color: rgb(0, 102, 255);
     padding:20px;
-
-    border-radius:12px;
-
+    border-radius:32px;
+    border-top:1px solid rgba(255, 255, 255, 0.479);
+    border-left:1px solid rgba(255, 255, 255, 0.418);
     box-shadow:0 0 10px rgba(0,0,0,.3);
-
-    /* RESPONSIVO */
+    padding:20px;
     overflow-x:auto;
 }
 
@@ -158,25 +162,15 @@ INPUTS E FORMULÁRIOS
 input,
 select,
 textarea{
-
     width:100%;
-
     padding:12px;
-
     margin-bottom:12px;
-
-    border:1px solid white;
-
-    border-radius:12px;
-
-    backdrop-filter: blur(30px);
-
-    background: rgba(0, 0, 0, 0.363);
-
+    border-top:1px solid rgba(255, 255, 255, 0.479);
+    border-left:1px solid rgba(255, 255, 255, 0.418);
+    border-radius:32px;
+    background:rgba(78, 38, 38, 0.144);
     color:white;
-
     outline:none;
-
     font-size:14px;
 }
 
@@ -190,7 +184,6 @@ select:focus,
 textarea:focus{
 
     border:2px solid #2563eb;
-
     transition:0.2s;
 }
 
@@ -200,162 +193,19 @@ textarea:focus{
 =============================== */
 
 textarea{
-
     resize:none;
-
     height:100px;
-
     transition:0.2s;
 }
 
 
 textarea:focus{
-
     height:150px;
-
     transition:0.2s;
 }
 
-
 .clientArea{
-
     height: 50px;
-}
-
-
-/* ===============================
-BOTÕES PRINCIPAIS
-=============================== */
-
-.mainBtn{
-
-    text-align: center;
-
-    /* RESPONSIVO */
-    width:100%;
-    max-width:220px;
-
-    height:45px;
-
-    padding:10px;
-
-    margin:10px auto;
-
-    display:block;
-
-    border:2px solid white;
-
-    border-radius:25px;
-
-    background:#0041f3;
-
-    color:white;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    font-size:14px;
-
-    transition: transform 0.2 ease;
-}
-
-
-.mainBtn:hover{
-
-    background:#002975;
-
-    transform: scale(1.10);
-}
-
-
-/* ===============================
-BOTÃO EXPORTAR
-=============================== */
-
-.exportBtn{
-
-    text-align: center;
-
-    width:100%;
-    max-width:220px;
-
-    height:45px;
-
-    padding:10px;
-
-    margin:10px auto;
-
-    display:block;
-
-    border:2px solid white;
-
-    border-radius:25px;
-
-    background:#00884f;
-
-    color:white;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    font-size:14px;
-
-    transition: transform 0.2 ease;
-}
-
-
-.exportBtn:hover{
-
-    background:#005230;
-
-    transform: scale(1.10);
-}
-
-
-/* ===============================
-BOTÃO SALVAR
-=============================== */
-
-.saveBtn{
-
-    text-align: center;
-
-    width:100%;
-    max-width:220px;
-
-    height:45px;
-
-    padding:10px;
-
-    margin:10px auto;
-
-    display:block;
-
-    border:2px solid white;
-
-    border-radius:25px;
-
-    background:#0041f3;
-
-    color:white;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    font-size:14px;
-
-    transition: transform 0.2 ease;
-}
-
-
-.saveBtn:hover{
-
-    background:#002975;
-
-    transform: scale(1.10);
 }
 
 
@@ -363,56 +213,127 @@ BOTÃO SALVAR
 BOTÕES GERAIS
 =============================== */
 
-button{
-
-    width:100%;
-
-    padding:12px;
-
-    border:none;
-
-    border-radius:8px;
-
-    background:#005ce6;
-
+.btn-Contagem{
+    backdrop-filter: blur(25px); 
+    border-top:1px solid rgba(255, 255, 255, 0.432);
+    border-left:1px solid rgba(255, 255, 255, 0.274);
+    border-bottom:1px solid rgba(255, 255, 255, 0.726);
+    border-right:1px solid rgb(255, 255, 255);
+    border-radius:25px;
+    background:#468b77b7;
     color:white;
-
     font-weight:bold;
-
     cursor:pointer;
-
-    transition:0.2s;
-
     font-size:14px;
+    transition: transform 0.2 ease;
+}
+
+button{
+    text-align: center;
+    width:100%;
+    max-width:220px;
+    height:45px;
+    padding:10px;
+    margin:10px auto;
+    display:block;
+    backdrop-filter: blur(25px); 
+    border-top:1px solid rgba(255, 255, 255, 0.432);
+    border-left:1px solid rgba(255, 255, 255, 0.274);
+    border-bottom:1px solid rgba(255, 255, 255, 0.726);
+    border-right:1px solid rgb(255, 255, 255);
+    border-radius:25px;
+    background:#468b77b7;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:14px;
+    transition: transform 0.2 ease;
 }
 
 
 button:hover{
 
-    background:#1d4ed8;
+    background:#2c574ab7;
+
+    transform: scale(1.10);
 }
 
+.mainBtn{
+    text-align: center;
+    width:15%;
+    height:45px;
+    padding:10px;
+    margin:10px auto;
+    display:block;
+    border:1px solid white;
+    border-radius:32px;
+    background:#0041f3;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:14px;
+    transition: transform 0.2 ease;
+}
+
+
+.mainBtn:hover{
+    background:#002975;
+    transform: scale(1.10);
+}
+
+.contBtn{
+    text-align: center;
+    width:15%;
+    height:45px;
+    padding:10px;
+    margin:10px auto;
+    display:block;
+    border:1px solid white;
+    border-radius:32px;
+    background:#0041f3;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:14px;
+    transition: transform 0.2 ease;
+
+}
+
+.contBtn:hover{
+    background:#002975;
+    transform: scale(1.10);
+}
+
+.van{
+    text-align: center;
+    width:100%;
+    height:120px;
+    padding:10px;
+    margin:10px auto;
+    display:block;
+    border:1px solid white;
+    border-radius:32px;
+    background:#0041f3;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:14px;
+    transition: transform 0.2 ease;
+    
+}
 
 /* ===============================
 TOPO DA TABELA
 =============================== */
 
 .topo{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     margin-bottom:15px;
-
     gap:10px;
 }
-
-
 .topo input{
-
     margin:0;
 }
 
@@ -422,9 +343,7 @@ TABELA
 =============================== */
 
 table{
-
     width:100%;
-
     border-collapse:collapse;
 }
 
@@ -435,13 +354,9 @@ CABEÇALHO E CÉLULAS
 
 th,
 td{
-
     padding:12px;
-
     text-align:left;
-
     border-bottom:1px solid rgb(42, 42, 42);
-
     font-size:14px;
 }
 
@@ -451,9 +366,7 @@ CABEÇALHO
 =============================== */
 
 .tableHead{
-
     padding: 100px;
-
     color:#ffffff;
 }
 
@@ -463,13 +376,9 @@ LINHAS DA TABELA
 =============================== */
 
 tbody tr{
-
     transition:0.2s;
 }
-
-
 tbody tr:hover{
-
     background:#ffffff36;
 }
 
@@ -479,15 +388,10 @@ STATUS
 =============================== */
 
 .status{
-
     padding:6px 10px;
-
     border-radius:20px;
-
     font-size:12px;
-
     font-weight:bold;
-
     display:inline-block;
 }
 
@@ -497,9 +401,7 @@ STATUS PENDENTE
 =============================== */
 
 .Pendente{
-
     background:#facc15;
-
     color:rgb(255, 255, 255);
 }
 
@@ -509,9 +411,7 @@ STATUS REENTREGAR
 =============================== */
 
 .Reentregar{
-
     background:#22c55e;
-
     color:white;
 }
 
@@ -521,130 +421,102 @@ STATUS DAR ENTRADA
 =============================== */
 
 .DarEntrada{
-
     background:#ef4444;
-
     color:white;
 }
-
 
 /* ===============================
 BOTÃO DELETAR
 =============================== */
 
 .deleteBtn{
-
-    background-color:#ff0000;
-
-    border-radius: 15px;
-
+    background-color:#ff0000e3;
+    border-radius: 25px;
     color: white;
-
     padding: 6px 10px;
-
     font-size: 12px;
-
-    border: 2px solid #ffffff;
-
+    border: 1px solid #ffffff;
     transition: transform 0.2 ease;
 }
 
-
 .deleteBtn:hover{
-
     transform: scale(1.10);
-
     background-color: rgb(160, 0, 0);
 }
 
+.deleteAll{
+    background-color:#ff0000;
+    border-radius: 25px;
+    color: white;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ffffff;
+    transition: transform 0.2 ease;
+}
+
+.deleteAll:hover{
+    transform: scale(1.10);
+    background-color: rgb(160, 0, 0);
+}
 
 /* ===============================
 BOTÃO EDITAR
 =============================== */
 
 .editBtn{
-
     border-radius: 15px;
-
     color: white;
-
     background-color: rgb(0, 106, 255);
-
-    border: 2px solid #ffffff;
-
+    border: 1px solid #ffffff;
     padding: 6px 10px;
-
     font-size: 12px;
-
     transition: transform 0.2 ease;
 }
 
-
 .editBtn:hover{
-
     transform: scale(1.10);
-
     background-color: rgb(0, 73, 174);
 }
-
 
 /* ===============================
 DASHBOARD
 =============================== */
 
 .dashboard{
-
     display:grid;
-
-    /* RESPONSIVO */
     grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
-
     gap:15px;
-
     margin-bottom:20px;
 }
-
 
 /* ===============================
 BOXES DASHBOARD
 =============================== */
 
 .dashboard .box{
-
     background:rgb(42, 42, 42);
-
     padding:20px;
-
     border-radius:12px;
-
     text-align:center;
-
     box-shadow:0 0 10px rgba(0,0,0,.3);
 }
-
 
 /* ===============================
 TÍTULOS DASHBOARD
 =============================== */
 
 .dashboard h3{
-
     font-size:14px;
-
     margin-bottom:10px;
-
     color:#94a3b8;
 }
-
 
 /* ===============================
 NÚMEROS DASHBOARD
 =============================== */
 
 .dashboard p{
-
     font-size:28px;
-
     font-weight:bold;
 }
 
@@ -654,91 +526,55 @@ SEÇÃO MAIN PAGE
 =============================== */
 
 .boxOne{
-
     height: auto;
-
     width:90%;
-
     max-width:400px;
-
     background: rgba(19, 18, 18, 0.267);
-
     align-items: center;
-
     margin:120px auto;
-
     padding: 30px;
-
     display: grid;
-
     justify-content: center;
-
     border-radius: 20px; 
-
     border: 1px solid white;       
 }
-
 
 /* ===============================
 LOGO MAIN PAGE
 =============================== */
 
 .logo2{
-
     height:auto;
-
     width:100%;
-
     max-width:350px;
-
     display:block;
-
     margin:0 auto;
-
     padding: 5px;
 }
-
 
 /* ===============================
 BOTÃO DASHBOARD
 =============================== */
 
 .dashBtn{
-
     width:100%;
-
     max-width:220px;
-
     height:45px;
-
     margin:20px auto;
-
     padding:10px;
-
     display:block;
-
     border:2px solid white;
-
     border-radius:25px;
-
     background:#0041f3;
-
     color:white;
-
     font-weight:bold;
-
     cursor:pointer;
-
     font-size:14px;
-
     transition: transform 0.2 ease;
 }
 
-
 .dashBtn:hover{
-
     background:#002975;
-
     transform: scale(1.10);
 }
 
@@ -748,14 +584,92 @@ TEXTO MAIN PAGE
 =============================== */
 
 .line2{
-
     display: flex;
-
     justify-content: center;
-
     margin-bottom: 15px;
 }
 
+/* ===============================
+ESTILIZAÇÃO PARA NOVAS LINHAS ADICIONADAS(INPUT IRÁ PISCAR COM ALGUMA COR)
+=============================== */
+.blink-highlight{
+    animation: blink 0.9s ease-in-out 0s 3;
+    --blink-color: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes blink{
+    0%{ background: transparent; }
+    50%{ background: var(--blink-color); }
+    100%{ background: transparent; }
+}
+
+/* ===============================
+LAYOUT DE TOAST DE DESFAZER AÇÃO
+=============================== */
+
+.undo-toast{
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: #1f2937;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 350px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.3);
+    opacity: 0;
+    transition: .35s ease;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.undo-toast.show{
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.undo-toast button{
+    width:auto;
+    height:auto;
+    margin:0;
+    padding:0;
+    border:none;
+    background:transparent;
+    color:#60a5fa;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:none;
+}
+
+.undo-progress{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background: #3b82f6;
+
+    transform-origin: left;
+}
+
+.undo-progress.animate{
+    animation: undoTimer 5s linear forwards;
+}
+
+@keyframes undoTimer{
+    from{
+        transform: scaleX(1);
+    }
+    to{
+        transform: scaleX(0);
+    }
+}
 
 /* ===============================
 RESPONSIVIDADE
@@ -764,35 +678,27 @@ RESPONSIVIDADE
 @media(max-width: 1024px){
 
     .container{
-
         grid-template-columns:1fr;
     }
-
     .card1{
-
         max-width:100%;
     }
-
     .topo{
 
         flex-direction:column;
-
         align-items:stretch;
     }
 
     table{
-
         font-size:12px;
     }
 
     th,
     td{
-
         padding:8px;
     }
 
     .dashboard{
-
         grid-template-columns:repeat(2,1fr);
     }
 
@@ -800,31 +706,21 @@ RESPONSIVIDADE
 
 
 @media(max-width: 600px){
-
     body{
-
         padding:10px;
     }
-
     h1{
-
         font-size:22px;
-
         text-align:center;
     }
-
     .dashboard{
-
         grid-template-columns:1fr;
     }
 
     .boxOne{
-
         padding:20px;
     }
-
     .logo2{
-
         max-width:250px;
     }
 
