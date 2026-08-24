@@ -91,4 +91,4 @@ Este projeto faz parte do meu processo de aprendizado em Análise e Desenvolvime
 👨‍💻 Autor
 Kaique Costa Silva
 
-Estudante de ADS | Focado em Front-end, TI, sistemas web e desenvolvimento administrativo.
+Estudante de TI | Focado em Front-end, TI, sistemas web e desenvolvimento administrativo.
