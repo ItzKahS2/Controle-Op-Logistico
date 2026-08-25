@@ -1,7 +1,40 @@
 /* ===============================
-CONTROLE GERAL DE FONTE
+FONTES
 =============================== */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+/* ===============================
+DESIGN TOKENS
+Paleta e medidas centralizadas para
+manter o visual "Liquid Glass" consistente.
+=============================== */
+:root{
+    --cor-fundo-1: #0043c9;
+    --cor-fundo-2: #0066ff;
+    --cor-fundo-3: #00a3ff;
+
+    --cor-acento: #0066ff;
+    --cor-acento-escuro: #002975;
+
+    --vidro-bg: rgba(255, 255, 255, 0.14);
+    --vidro-bg-forte: rgba(0, 102, 255, 0.38);
+    --vidro-borda: rgba(255, 255, 255, 0.55);
+    --vidro-borda-fraca: rgba(255, 255, 255, 0.22);
+    --vidro-blur: blur(22px) saturate(180%);
+
+    --sombra-suave: 0 8px 30px rgba(0, 10, 40, 0.35);
+    --sombra-forte: 0 20px 50px rgba(0, 10, 40, 0.45);
+
+    --raio-lg: 32px;
+    --raio-md: 20px;
+    --raio-sm: 14px;
+
+    --status-pendente: #facc15;
+    --status-reentregar: #22c55e;
+    --status-dar-entrada: #ef4444;
+    --status-perigo: #ff3b30;
+}
 
 
 /* ===============================
@@ -12,34 +45,64 @@ RESET GERAL
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-    font-family:"Poppins", sans-serif;
+    font-family:"Poppins", "Nunito", Arial, Helvetica, sans-serif;
+}
+
+:focus-visible{
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+.sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
 }
 
 
 /* ===============================
 BODY PRINCIPAL
+Fundo com leve profundidade para o
+efeito de vidro fosco ter algo para
+"borrar" atrás dos cards.
 =============================== */
 
 body{
     min-height:100vh;
-    background-color: rgb(0, 95, 238);
-    background-size: cover;
-    background-position: center;
-    backdrop-filter: blur(10px);
+    background:
+        radial-gradient(circle at 15% 10%, var(--cor-fundo-3) 0%, transparent 45%),
+        radial-gradient(circle at 85% 90%, var(--cor-fundo-1) 0%, transparent 50%),
+        linear-gradient(160deg, var(--cor-fundo-1), var(--cor-fundo-2));
+    background-attachment: fixed;
     color:white;
     padding:20px;
 }
 
 
 /* ===============================
-CONTROLE PADRÃO DE IMAGENS
+LOGO / IMAGEM DE TOPO
 =============================== */
 
-img{ 
-    height: 0vh;
-    display: none;
-    justify-content: center;
+.logo{
+    display:block;
+    max-width:140px;
+    margin:0 auto 10px;
+    border-radius:var(--raio-sm);
+}
+
+.logo2{
+    height:auto;
+    width:100%;
+    max-width:350px;
+    display:block;
+    margin:0 auto;
+    padding:5px;
 }
 
 
@@ -50,13 +113,14 @@ TÍTULO PRINCIPAL
 h1{
     margin-bottom:20px;
     font-size:28px;
-    font-weight:bold;
+    font-weight:700;
+    letter-spacing:.2px;
+    text-shadow: 0 2px 12px rgba(0,0,0,.25);
 }
 
 
 /* ===============================
 LAYOUT PRINCIPAL
-CONTROLA O CONTEÚDO CENTRAL
 =============================== */
 
 .container{
@@ -69,82 +133,85 @@ CONTROLA O CONTEÚDO CENTRAL
 
 
 /* ===============================
-CARDS
+BASE "VIDRO" (Liquid Glass)
+Aplicada aos painéis principais para
+manter o efeito consistente.
 =============================== */
 
-#formCard{
-    display:none;
+.overlay,
+.card1,
+.card,
+.undo-toast,
+.boxOne{
+    background: var(--vidro-bg-forte);
+    backdrop-filter: var(--vidro-blur);
+    -webkit-backdrop-filter: var(--vidro-blur);
+    border-top:1px solid var(--vidro-borda);
+    border-left:1px solid rgba(255, 255, 255, 0.45);
+    border-right:1px solid var(--vidro-borda-fraca);
+    border-bottom:1px solid var(--vidro-borda-fraca);
+    box-shadow: var(--sombra-suave), inset 0 1px 0 rgba(255,255,255,.25);
 }
 
 
 /* ===============================
-ÁREA SUPERIOR - HUB
+ÁREA SUPERIOR - HUB (NAV)
 =============================== */
 
 .overlay{
-    display:grid;
+    display:flex;
+    gap:10px;
     justify-content:start;
     align-items:center;
-    width:100%;
-    max-width:320px;
-    max-height:55px;
-    padding:10px;
-    display:flex;
+    width:fit-content;
+    padding:8px 10px;
     margin-left:7vh;
-    margin-bottom: 1vh;
-    background-color: rgb(0, 102, 255);
-    border-top:1px solid rgb(255, 255, 255);
-    border-left:1px solid rgba(255, 255, 255, 0.753);
-    border-right:1px solid rgba(255, 255, 255, 0.541);
-    border-bottom:1px solid rgba(255, 255, 255, 0.418);
-    box-shadow: inset 0 0 10px rgba(255,255,255,.3);
+    margin-bottom:2vh;
     border-radius:32px;
 }
-    
-  
+
+.overlay a,
+.overlay button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:45px;
+    height:45px;
+    margin:0;
+    padding:0;
+    border-radius:50%;
+    font-size:16px;
+}
+
+
 /* ===============================
 CARD FORMULÁRIO
 =============================== */
 
-.card1{
+#formCard{
     width:100%;
     max-width:420px;
-    margin-top: 25px;
-    background-color: rgb(0, 102, 255);
-    border-top:1px solid rgba(255, 255, 255, 0.479);
-    border-left:1px solid rgba(255, 255, 255, 0.418);
+    margin-top:25px;
     padding:20px;
-    border-radius:32px;
-    box-shadow:0 0 10px rgba(0,0,0,.3);
-    padding:20px;
-    border-radius:32px;
-    box-shadow:0 0 10px rgba(0,0,0,.3);
+    border-radius:var(--raio-lg);
+    transition: box-shadow .3s ease, background-color .3s ease;
 }
 
 /* ===============================
 MODO EDIÇÃO
 =============================== */
 
-.card1.editando{
-
+#formCard.editando{
     animation: editPulse 1.5s infinite alternate;
-
     border: 1px solid rgba(255,255,255,.9);
-
     box-shadow:
         0 0 15px rgba(255,255,255,.25),
         0 0 30px rgba(255,255,255,.15);
 }
 
 @keyframes editPulse{
-
-    from{
-        background-color: rgb(0, 102, 255);
-    }
-
-    to{
-        background-color: rgb(40, 130, 255);
-    }
+    from{ background-color: var(--vidro-bg-forte); }
+    to{ background-color: rgba(40, 130, 255, 0.5); }
 }
 
 
@@ -153,18 +220,12 @@ CARD TABELA
 =============================== */
 
 .card{
-    width: 100%;
-    margin-top: 25px;
-    background-color: rgb(0, 102, 255);
+    width:100%;
+    margin-top:25px;
     padding:20px;
-    border-radius:32px;
-    border-top:1px solid rgba(255, 255, 255, 0.479);
-    border-left:1px solid rgba(255, 255, 255, 0.418);
-    box-shadow:0 0 10px rgba(0,0,0,.3);
-    padding:20px;
+    border-radius:var(--raio-lg);
     overflow-x:auto;
 }
-
 
 .card h2{
     margin-bottom:15px;
@@ -180,34 +241,35 @@ input,
 select,
 textarea{
     width:100%;
-    padding:12px;
+    padding:12px 14px;
     margin-bottom:12px;
     border-top:1px solid rgba(255, 255, 255, 0.479);
     border-left:1px solid rgba(255, 255, 255, 0.418);
-    border-radius:32px;
-    background:rgba(78, 38, 38, 0.144);
+    border-right:1px solid rgba(255,255,255,.15);
+    border-bottom:1px solid rgba(255,255,255,.15);
+    border-radius:var(--raio-lg);
+    background:rgba(255, 255, 255, 0.1);
     color:white;
     outline:none;
     font-size:14px;
 }
 
+input::placeholder,
+textarea::placeholder{
+    color: rgba(255,255,255,.7);
+}
 
-/* ===============================
-FOCUS DOS CAMPOS
-=============================== */
+select option{
+    color:#111;
+}
 
 input:focus,
 select:focus,
 textarea:focus{
-
-    border:2px solid #2563eb;
+    border:2px solid #ffffff;
+    background:rgba(255, 255, 255, 0.18);
     transition:0.2s;
 }
-
-
-/* ===============================
-ÁREAS DE TEXTO
-=============================== */
 
 textarea{
     resize:none;
@@ -215,14 +277,36 @@ textarea{
     transition:0.2s;
 }
 
-
 textarea:focus{
     height:150px;
-    transition:0.2s;
 }
 
 .clientArea{
-    height: 50px;
+    height:50px;
+}
+
+
+/* ===============================
+FEEDBACK DE LOGIN
+=============================== */
+
+.login-feedback{
+    min-height:0;
+    font-size:13px;
+    line-height:1.4;
+    color:rgba(255,255,255,.85);
+    margin:-4px 0 12px;
+    opacity:0;
+    transition:.2s ease;
+}
+
+.login-feedback.visivel{
+    opacity:1;
+}
+
+.login-feedback.erro{
+    color:#ffd0cc;
+    font-weight:600;
 }
 
 
@@ -230,30 +314,16 @@ textarea:focus{
 BOTÕES GERAIS
 =============================== */
 
-.btn-Contagem{
-    backdrop-filter: blur(25px); 
-    border-top:1px solid rgba(255, 255, 255, 0.432);
-    border-left:1px solid rgba(255, 255, 255, 0.274);
-    border-bottom:1px solid rgba(255, 255, 255, 0.726);
-    border-right:1px solid rgb(255, 255, 255);
-    border-radius:25px;
-    background:#468b77b7;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    font-size:14px;
-    transition: transform 0.2 ease;
-}
-
 button{
-    text-align: center;
+    text-align:center;
     width:100%;
     max-width:220px;
     height:45px;
     padding:10px;
     margin:10px auto;
     display:block;
-    backdrop-filter: blur(25px); 
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-top:1px solid rgba(255, 255, 255, 0.432);
     border-left:1px solid rgba(255, 255, 255, 0.274);
     border-bottom:1px solid rgba(255, 255, 255, 0.726);
@@ -264,59 +334,46 @@ button{
     font-weight:bold;
     cursor:pointer;
     font-size:14px;
-    transition: transform 0.2 ease;
+    transition: transform .2s ease, background-color .2s ease;
 }
-
 
 button:hover{
     background:#2c574ab7;
-    transform: scale(1.10);
+    transform: scale(1.06);
 }
 
-.mainBtn{
-    text-align: center;
-    width:15%;
-    height:45px;
-    padding:10px;
-    margin:10px auto;
-    display:block;
-    border:1px solid white;
-    border-radius:32px;
-    background:#0041f3;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    font-size:14px;
-    transition: transform 0.2 ease;
+button:active{
+    transform: scale(0.97);
 }
 
-
-.mainBtn:hover{
-    background:#002975;
-    transform: scale(1.10);
-}
-
+.mainBtn,
 .contBtn{
-    text-align: center;
-    width:15%;
-    height:45px;
-    padding:10px;
-    margin:10px auto;
-    display:block;
-    border:1px solid white;
-    border-radius:32px;
-    background:#0041f3;
+    text-align:center;
+    border:1px solid rgba(255,255,255,.5);
+    background:var(--cor-acento);
     color:white;
     font-weight:bold;
     cursor:pointer;
-    font-size:14px;
-    transition: transform 0.2 ease;
-
+    transition: transform .2s ease, background-color .2s ease;
 }
 
+.mainBtn:hover,
 .contBtn:hover{
-    background:#002975;
-    transform: scale(1.10);
+    background:var(--cor-acento-escuro);
+    transform: scale(1.08);
+}
+
+.logoutBtn{
+    border:1px solid rgba(255,255,255,.5);
+    background: rgba(255, 59, 48, 0.55);
+    color:white;
+    cursor:pointer;
+    transition: transform .2s ease, background-color .2s ease;
+}
+
+.logoutBtn:hover{
+    background: rgba(200, 30, 25, .8);
+    transform: scale(1.08);
 }
 
 
@@ -331,6 +388,7 @@ TOPO DA TABELA
     margin-bottom:15px;
     gap:10px;
 }
+
 .topo input{
     margin:0;
 }
@@ -345,39 +403,29 @@ table{
     border-collapse:collapse;
 }
 
-
-/* ===============================
-CABEÇALHO E CÉLULAS
-=============================== */
-
 th,
 td{
     padding:12px;
     text-align:left;
-    border-bottom:1px solid rgb(42, 42, 42);
+    border-bottom:1px solid rgba(255,255,255,.15);
     font-size:14px;
 }
 
-
-/* ===============================
-CABEÇALHO
-=============================== */
-
-.tableHead{
-    padding: 100px;
+.tableHead th{
     color:#ffffff;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    opacity:.85;
+    padding-bottom:14px;
 }
-
-
-/* ===============================
-LINHAS DA TABELA
-=============================== */
 
 tbody tr{
-    transition:0.2s;
+    transition:.2s;
 }
+
 tbody tr:hover{
-    background:#ffffff36;
+    background:#ffffff1f;
 }
 
 
@@ -393,91 +441,80 @@ STATUS
     display:inline-block;
 }
 
-
-/* ===============================
-STATUS PENDENTE
-=============================== */
-
 .Pendente{
-    background:#facc15;
-    color:rgb(255, 255, 255);
+    background:var(--status-pendente);
+    color:#3d2f00;
 }
-
-
-/* ===============================
-STATUS REENTREGAR
-=============================== */
 
 .Reentregar{
-    background:#22c55e;
+    background:var(--status-reentregar);
     color:white;
 }
-
-
-/* ===============================
-STATUS DAR ENTRADA
-=============================== */
 
 .DarEntrada{
-    background:#ef4444;
+    background:var(--status-dar-entrada);
     color:white;
 }
 
+
 /* ===============================
-BOTÃO DELETAR
+BOTÕES DE AÇÃO DA TABELA
 =============================== */
 
 .deleteBtn{
-    background-color:#ff0000e3;
-    border-radius: 25px;
-    color: white;
-    padding: 6px 10px;
-    font-size: 12px;
-    border: 1px solid #ffffff;
-    transition: transform 0.2 ease;
+    background-color:rgba(255, 0, 0, 0.75);
+    border-radius:25px;
+    color:white;
+    width:auto;
+    max-width:none;
+    height:auto;
+    padding:6px 10px;
+    font-size:12px;
+    border:1px solid #ffffff;
+    transition: transform .2s ease;
 }
 
 .deleteBtn:hover{
-    transform: scale(1.10);
+    transform: scale(1.08);
     background-color: rgb(160, 0, 0);
 }
 
 .deleteAll{
-    background-color:#ff0000;
-    border-radius: 25px;
-    color: white;
-    padding: 6px 10px;
-    font-size: 14px;
-    border: 1px solid #ffffff;
-    transition: transform 0.2 ease;
+    background-color:var(--status-perigo);
+    border-radius:25px;
+    color:white;
+    padding:6px 10px;
+    font-size:14px;
+    border:1px solid #ffffff;
+    transition: transform .2s ease;
 }
 
 .deleteAll:hover{
-    transform: scale(1.10);
+    transform: scale(1.08);
     background-color: rgb(160, 0, 0);
 }
 
-/* ===============================
-BOTÃO EDITAR
-=============================== */
-
 .editBtn{
-    border-radius: 15px;
-    color: white;
-    background-color: rgb(0, 106, 255);
-    border: 1px solid #ffffff;
-    padding: 6px 10px;
-    font-size: 12px;
-    transition: transform 0.2 ease;
+    border-radius:15px;
+    color:white;
+    background-color: rgba(0, 106, 255, 0.85);
+    border:1px solid #ffffff;
+    width:auto;
+    max-width:none;
+    height:auto;
+    padding:6px 10px;
+    font-size:12px;
+    transition: transform .2s ease;
 }
 
 .editBtn:hover{
-    transform: scale(1.10);
+    transform: scale(1.08);
     background-color: rgb(0, 73, 174);
 }
 
+
 /* ===============================
-DASHBOARD
+DASHBOARD (reservado p/ métricas futuras)
 =============================== */
 
 .dashboard{
@@ -487,31 +524,19 @@ DASHBOARD
     margin-bottom:20px;
 }
 
-/* ===============================
-BOXES DASHBOARD
-=============================== */
-
 .dashboard .box{
-    background:rgb(42, 42, 42);
+    background:rgba(0,0,0,.35);
     padding:20px;
     border-radius:12px;
     text-align:center;
     box-shadow:0 0 10px rgba(0,0,0,.3);
 }
 
-/* ===============================
-TÍTULOS DASHBOARD
-=============================== */
-
 .dashboard h3{
     font-size:14px;
     margin-bottom:10px;
-    color:#94a3b8;
+    color:#cfe0ff;
 }
-
-/* ===============================
-NÚMEROS DASHBOARD
-=============================== */
 
 .dashboard p{
     font-size:28px;
@@ -520,90 +545,54 @@ NÚMEROS DASHBOARD
 
 
 /* ===============================
-SESSÃO MAIN PAGE
+TELA DE LOGIN (hub1.html)
 =============================== */
 
 .mainBody{
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-    align-items: center;
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+    align-items:center;
 }
 
 .boxOne{
     width:100%;
-    height: 240px;
-    max-width:320px;
-    max-height:240px;
-    padding:10px;
-    background-color: rgb(0, 102, 255);
-    border-top:1px solid rgba(255, 255, 255, 0.801);
-    border-left:1px solid rgba(255, 255, 255, 0.74);
-    border-right:1px solid rgba(255, 255, 255, 0.315);
-    border-bottom:1px solid rgba(255, 255, 255, 0.418);
-    box-shadow:0 0 50px rgba(0, 0, 0, 0.158);
-    border-radius:32px;     
-}
-
-.login{
-    max-width: 70%;
-    max-height: 20%;
-    margin: 0px 40px 0px 40px;
-    background-color: rgba(255, 255, 255, 0.178);
-    border: 0px solid white;
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.459);
-}
-
-.password{
-    max-width: 70%;
-    max-height: 20%;
-    margin: 10px 40px 0px 40px;
-    background-color: rgba(255, 255, 255, 0.178);
-    border: 0px solid white;
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.459);
+    max-width:340px;
+    padding:24px;
+    border-radius:var(--raio-lg);
 }
 
 .lgnText{
-    margin: 20px 70px 0px;
+    text-align:center;
+    margin-bottom:20px;
 }
 
-.loginBtn {
-    display: inline-flex; 
-    justify-content: center; 
-    align-items: center;
-    width: 30%;
-    height: 50%; 
-    margin: 10px 100px 0px;
-    border-radius: 32px;
-    background: white;
-    color: rgb(54, 54, 54);
-    text-decoration: none;
-    transition: transform 0.2s ease; 
+.login,
+.password{
+    background-color: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.loginBtn{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    width:100%;
+    max-width:none;
+    background:white;
+    color: rgb(30, 30, 30);
+    text-decoration:none;
+    transition: transform .2s ease, background-color .2s ease;
     font-weight:bold;
 }
 
-
 .loginBtn:hover{
-    transform: scale(1.10);
-    background-color:rgb(51, 51, 51);
-    color: white;
-    border: none;
+    transform: scale(1.05);
+    background-color: rgb(235, 235, 235);
+    color: rgb(20, 20, 20);
 }
 
-
-
-/* ===============================
-LOGO MAIN PAGE
-=============================== */
-
-.logo2{
-    height:auto;
-    width:100%;
-    max-width:350px;
-    display:block;
-    margin:0 auto;
-    padding: 5px;
-}
 
 /* ===============================
 BOTÃO DASHBOARD
@@ -618,33 +607,24 @@ BOTÃO DASHBOARD
     display:block;
     border:2px solid white;
     border-radius:25px;
-    background:#0041f3;
+    background:var(--cor-acento);
     color:white;
     font-weight:bold;
     cursor:pointer;
     font-size:14px;
-    transition: transform 0.2 ease;
+    transition: transform .2s ease;
 }
 
 .dashBtn:hover{
-    background:#002975;
+    background:var(--cor-acento-escuro);
     transform: scale(1.10);
 }
 
 
 /* ===============================
-TEXTO MAIN PAGE
+EFEITO "PISCAR" (linha nova / destaque)
 =============================== */
 
-.line2{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-
-/* ===============================
-ESTILIZAÇÃO PARA NOVAS LINHAS ADICIONADAS(INPUT IRÁ PISCAR COM ALGUMA COR)
-=============================== */
 .blink-highlight{
     animation: blink 0.9s ease-in-out 0s 3;
     --blink-color: rgba(255, 255, 255, 0.6);
@@ -656,8 +636,9 @@ ESTILIZAÇÃO PARA NOVAS LINHAS ADICIONADAS(INPUT IRÁ PISCAR COM ALGUMA COR)
     100%{ background: transparent; }
 }
 
+
 /* ===============================
-LAYOUT DE TOAST DE DESFAZER AÇÃO
+TOAST DE DESFAZER AÇÃO
 =============================== */
 
 .undo-toast{
@@ -665,20 +646,15 @@ LAYOUT DE TOAST DE DESFAZER AÇÃO
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%) translateY(120px);
-    background: rgb(0, 102, 255);
     color: white;
     padding: 14px 18px;
     border-radius: 32px;
     display: flex;
     align-items: center;
     gap: 15px;
-    min-width: 440px;
-    height: 80px;
-    border-top:1px solid rgb(255, 255, 255);
-    border-left:1px solid rgba(255, 255, 255, 0.753);
-    border-right:1px solid rgba(255, 255, 255, 0.541);
-    border-bottom:1px solid rgba(255, 255, 255, 0.418);
-    box-shadow: inset 0 0 10px rgba(255,255,255,.3);
+    min-width: 320px;
+    max-width: calc(100vw - 40px);
+    height: 60px;
     opacity: 0;
     transition: .35s ease;
     overflow: hidden;
@@ -691,24 +667,27 @@ LAYOUT DE TOAST DE DESFAZER AÇÃO
 }
 
 .undo-toast button{
-    border: none;
-    background: transparent;
-    color: #ffffff;
-    font-weight: bold;
-    cursor: pointer;
+    width:auto;
+    max-width:none;
+    height:auto;
+    margin:0;
+    padding:6px 12px;
+    border:none;
+    background: rgba(255,255,255,.18);
+    color:#ffffff;
+    font-weight:bold;
+    cursor:pointer;
 }
 
 .undo-progress{
     position: absolute;
     bottom: 0;
     left: 0;
-
     width: 100%;
     height: 4px;
-
     background: #ffffff;
-
     transform-origin: left;
+    transform: scaleX(0);
 }
 
 .undo-progress.animate{
@@ -716,47 +695,37 @@ LAYOUT DE TOAST DE DESFAZER AÇÃO
 }
 
 @keyframes undoTimer{
-    from{
-        transform: scaleX(1);
-    }
-    to{
-        transform: scaleX(0);
-    }
+    from{ transform: scaleX(1); }
+    to{ transform: scaleX(0); }
 }
+
 
 /* ===============================
 RESPONSIVIDADE
 =============================== */
 
 @media(max-width: 1024px){
-
     .container{
         grid-template-columns:1fr;
     }
-    .card1{
+    #formCard{
         max-width:100%;
     }
     .topo{
-
         flex-direction:column;
         align-items:stretch;
     }
-
     table{
         font-size:12px;
     }
-
     th,
     td{
         padding:8px;
     }
-
     .dashboard{
         grid-template-columns:repeat(2,1fr);
     }
-
 }
-
 
 @media(max-width: 600px){
     body{
@@ -769,12 +738,12 @@ RESPONSIVIDADE
     .dashboard{
         grid-template-columns:1fr;
     }
-
-    .boxOne{
-        padding:20px;
-    }
     .logo2{
         max-width:250px;
     }
-
+    .undo-toast{
+        min-width: unset;
+        width: calc(100vw - 30px);
+        flex-wrap: wrap;
+    }
 }
