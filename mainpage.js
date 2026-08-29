@@ -18,7 +18,7 @@
 const AUTH_STORAGE_KEY    = "helperlog_conta";
 const SESSION_STORAGE_KEY = "helperlog_sessao";
 const PAGINA_APOS_LOGIN   = "hub2.html";
-const PAGINA_APOS_LOGOUT  = "hub1.html";
+const PAGINA_APOS_LOGOUT  = "index.html";
 
 /* ------------------------------------------------------------------
    UTILITÁRIOS DE CONTA
