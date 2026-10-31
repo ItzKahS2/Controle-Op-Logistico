@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Operacional — Helper.log</title>
+<link rel="stylesheet" href="04-style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="mainpage.js"></script>
+<script>exigirLogin();</script>
+<style>
+.wrap{max-width:1280px;margin:0 auto}
+.head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px;margin:10px 0 18px}
+.head h1{margin:0}
+.head p{opacity:.85;font-size:14px;margin-top:4px;max-width:60ch}
+.seg{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(0,0,0,.25)}
+.seg button{width:auto;max-width:none;height:auto;margin:0;padding:7px 16px;border:0;background:transparent;font-size:13px;border-radius:999px;font-weight:600;backdrop-filter:none}
+.seg button:hover{transform:none;background:rgba(255,255,255,.15)}
+.seg button.on{background:#fff;color:#0043c9}
+.g{background:var(--vidro-bg-forte);backdrop-filter:var(--vidro-blur);-webkit-backdrop-filter:var(--vidro-blur);border-top:1px solid var(--vidro-borda);border-left:1px solid rgba(255,255,255,.45);border-right:1px solid var(--vidro-borda-fraca);border-bottom:1px solid var(--vidro-borda-fraca);box-shadow:var(--sombra-suave);border-radius:var(--raio-lg);padding:20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
+.kpi{padding:16px 18px;border-radius:var(--raio-md)}
+.kpi small{display:block;font-size:12px;opacity:.8}
+.kpi b{display:block;font-size:30px;line-height:1.15;margin:4px 0 2px}
+.kpi span{font-size:12px;opacity:.85}
+.kpi.alerta{box-shadow:0 0 0 2px #facc15,var(--sombra-suave)}
+.stage{position:relative;padding:0;overflow:hidden;margin-bottom:18px}
+#cena{height:min(62vh,520px);min-height:340px;cursor:grab;touch-action:none}
+#cena:active{cursor:grabbing}
+#cena canvas{display:block;width:100%;height:100%}
+.stage .tl{position:absolute;left:20px;top:16px;pointer-events:none}
+.stage .tl h2{font-size:18px}
+.stage .tl p{font-size:12px;opacity:.85}
+.docas{display:flex;flex-wrap:wrap;gap:8px 18px;padding:12px 20px 16px;font-size:13px;border-top:1px solid rgba(255,255,255,.2)}
+.docas i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.grid{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;margin-bottom:18px}
+.grid3{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g h3{font-size:15px;margin-bottom:12px}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;margin-top:8px}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.hb{display:grid;grid-template-columns:minmax(80px,38%) 1fr auto;gap:10px;align-items:center;margin:9px 0;font-size:13px}
+.hb div.t{height:10px;border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden}
+.hb div.t u{display:block;height:100%;border-radius:99px;background:#fff;text-decoration:none}
+.hb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vazio{opacity:.8;font-size:13px;padding:10px 0}
+svg text{fill:#fff;font-size:11px;font-family:Poppins,sans-serif}
+@media(max-width:900px){.grid,.grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="overlay" style="margin-left:0">
+    <a class="mainBtn" href="hub2.html" title="Ocorrências"><i class="bi bi-list-check"></i></a>
+    <a class="contBtn" href="dashboard.html" title="Painel" aria-current="page"><i class="bi bi-bar-chart-line-fill"></i></a>
+    <button type="button" class="logoutBtn" onclick="encerrarSessao()" title="Sair"><i class="bi bi-box-arrow-right"></i></button>
+  </nav>
+
+  <div class="head">
+    <div>
+      <h1>Painel operacional</h1>
+      <p id="resumo"></p>
+    </div>
+    <div class="seg" role="group" aria-label="Período">
+      <button data-p="7" class="on">7 dias</button>
+      <button data-p="30">30 dias</button>
+      <button data-p="0">Tudo</button>
+    </div>
+  </div>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="g stage">
+    <div class="tl"><h2>Armazém ao vivo</h2><p>Cada caixa na área de triagem é uma ocorrência. Arraste para girar.</p></div>
+    <div id="cena" aria-label="Representação 3D do armazém"></div>
+    <div class="docas" id="docas"></div>
+  </section>
+
+  <section class="grid">
+    <div class="g"><h3>Ocorrências por dia</h3><div id="chDia"></div></div>
+    <div class="g"><h3>Situação atual</h3><div id="chStatus"></div></div>
+  </section>
+
+  <section class="grid3">
+    <div class="g"><h3>Transportadoras com mais ocorrências</h3><div id="chTransp"></div></div>
+    <div class="g"><h3>Tipos de ocorrência</h3><div id="chTipo"></div></div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+"use strict";
+/* ---------- DADOS ---------- */
+const COR = { Pendente:"#facc15", Reentregar:"#22c55e", DarEntrada:"#ef4444" };
+const NOME = { Pendente:"Pendente", Reentregar:"Reentregar", DarEntrada:"Dar entrada" };
+const STATUS = Object.keys(COR);
+const DIA = 864e5;
+
+function carregar(){
+  try { return JSON.parse(localStorage.getItem("ocorrencias")) || []; } catch { return []; }
+}
+function paraData(s){
+  const m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(String(s||""));
+  return m ? new Date(+m[3], +m[2]-1, +m[1]) : new Date();
+}
+const chave = d => d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const contar = (lista, fn) => { const m = {}; lista.forEach(x => { const k = fn(x) || "—"; m[k] = (m[k]||0)+1; }); return Object.entries(m).sort((a,b)=>b[1]-a[1]); };
+
+let periodo = 7;
+
+function filtrar(todos){
+  if (!periodo) return todos;
+  const corte = Date.now() - periodo*DIA;
+  return todos.filter(o => paraData(o.data).getTime() >= corte - DIA);
+}
+
+/* ---------- INDICADORES ---------- */
+function kpis(todos, lista){
+  const hoje = todos.filter(o => chave(paraData(o.data)) === chave(new Date())).length;
+  const pend = lista.filter(o => o.status === "Pendente").length;
+  const pct = lista.length ? Math.round(pend / lista.length * 100) : 0;
+  let dias = periodo;
+  if (!periodo) {
+    const min = Math.min(...lista.map(o => paraData(o.data).getTime()), Date.now());
+    dias = Math.max(1, Math.ceil((Date.now() - min) / DIA));
+  }
+  const media = lista.length ? (lista.length / dias).toFixed(1).replace(".", ",") : "0";
+  const topT = contar(lista, o => o.transportadora)[0];
+  const topTipo = contar(lista, o => o.tipo)[0];
+  const card = (t, v, s, cls="") => `<div class="g kpi ${cls}"><small>${t}</small><b>${v}</b><span>${s}</span></div>`;
+  document.getElementById("kpis").innerHTML =
+    card("Ocorrências no período", lista.length, `${hoje} registrada${hoje===1?"":"s"} hoje`) +
+    card("Aguardando decisão", pend, `${pct}% do período`, pct >= 50 && pend ? "alerta" : "") +
+    card("Média por dia", media, `em ${dias} dia${dias===1?"":"s"}`) +
+    card("Transportadora crítica", topT ? esc(topT[0]) : "—", topT ? `${topT[1]} ocorrência${topT[1]===1?"":"s"}` : "Sem dados") +
+    card("Tipo mais frequente", topTipo ? esc(topTipo[0]) : "—", topTipo ? `${Math.round(topTipo[1]/lista.length*100)}% do total` : "Sem dados");
+
+  document.getElementById("resumo").textContent = lista.length
+    ? `${pend} de ${lista.length} ocorrências ainda aguardam decisão.` + (topT ? ` ${topT[0]} concentra ${Math.round(topT[1]/lista.length*100)}% dos casos.` : "")
+    : "Nenhuma ocorrência neste período. Registre em Ocorrências para ver os indicadores.";
+}
+
+/* ---------- GRÁFICOS ---------- */
+function graficoDia(lista){
+  const n = periodo === 7 ? 7 : 30, W = 620, H = 210, base = H-28, bw = W / n;
+  const dias = [];
+  for (let i = n-1; i >= 0; i--) dias.push(new Date(Date.now() - i*DIA));
+  const por = {}; lista.forEach(o => { const k = chave(paraData(o.data)); (por[k] = por[k] || {Pendente:0,Reentregar:0,DarEntrada:0})[o.status] = (por[k][o.status]||0)+1; });
+  const max = Math.max(1, ...dias.map(d => STATUS.reduce((s,k)=>s+((por[chave(d)]||{})[k]||0),0)));
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Ocorrências por dia">`;
+  [0, .5, 1].forEach(f => { const y = base - f*(base-12); svg += `<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,.2)"/><text x="0" y="${y-3}">${Math.round(max*f)}</text>`; });
+  dias.forEach((d,i) => {
+    let y = base; const reg = por[chave(d)] || {};
+    STATUS.forEach(k => { const v = reg[k]||0; if (!v) return; const h = v/max*(base-12); y -= h;
+      svg += `<rect x="${i*bw+bw*.18}" y="${y}" width="${bw*.64}" height="${h}" rx="4" fill="${COR[k]}"><title>${d.toLocaleDateString("pt-BR")} · ${NOME[k]}: ${v}</title></rect>`; });
+    if (n === 7 || i % 5 === 0 || i === n-1) svg += `<text x="${i*bw+bw/2}" y="${H-8}" text-anchor="middle">${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}</text>`;
+  });
+  document.getElementById("chDia").innerHTML = svg + "</svg>" + legenda();
+}
+function legenda(){ return `<div class="leg">${STATUS.map(k=>`<span><i style="background:${COR[k]}"></i>${NOME[k]}</span>`).join("")}</div>`; }
+
+function graficoStatus(lista){
+  const tot = lista.length, R = 52, C = 2*Math.PI*R;
+  if (!tot) { document.getElementById("chStatus").innerHTML = `<p class="vazio">Sem ocorrências no período.</p>`; return; }
+  let off = 0, arcos = "";
+  STATUS.forEach(k => { const v = lista.filter(o=>o.status===k).length; if (!v) return; const len = v/tot*C;
+    arcos += `<circle r="${R}" cx="70" cy="70" fill="none" stroke="${COR[k]}" stroke-width="22" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"><title>${NOME[k]}: ${v}</title></circle>`; off += len; });
+  const itens = STATUS.map(k => { const v = lista.filter(o=>o.status===k).length; return `<div class="hb" style="grid-template-columns:1fr auto"><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${COR[k]};margin-right:8px"></i>${NOME[k]}</span><span>${v} · ${Math.round(v/tot*100)}%</span></div>`; }).join("");
+  document.getElementById("chStatus").innerHTML = `<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 140 140" width="150" role="img" aria-label="Distribuição por status">${arcos}<text x="70" y="68" text-anchor="middle" style="font-size:26px;font-weight:700">${tot}</text><text x="70" y="86" text-anchor="middle">total</text></svg><div style="flex:1;min-width:150px">${itens}</div></div>`;
+}
+
+function barras(id, pares){
+  const el = document.getElementById(id);
+  if (!pares.length) { el.innerHTML = `<p class="vazio">Sem ocorrências no período.</p>`; return; }
+  const max = pares[0][1];
+  el.innerHTML = pares.slice(0,6).map(([n,v]) => `<div class="hb"><span title="${esc(n)}">${esc(n)}</span><div class="t"><u style="width:${v/max*100}%"></u></div><b>${v}</b></div>`).join("");
+}
+
+/* ---------- ARMAZÉM 3D ---------- */
+const palco = document.getElementById("cena");
+const reduzMov = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let renderer, scene, camera, caixas, caminhoes = [], empilhadeiras = [], yaw = .75, alvoYaw = .75, relogio = new THREE.Clock();
+
+const mat = (c, extra={}) => new THREE.MeshLambertMaterial(Object.assign({ color:c, flatShading:true }, extra));
+function cubo(w,h,d,c,x=0,y=0,z=0,pai){ const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat(c)); m.position.set(x,y,z); if (pai) pai.add(m); return m; }
+
+function montarCena(){
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(42, 1, .1, 200);
+  renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  palco.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, .65));
+  const sol = new THREE.DirectionalLight(0xffffff, .8); sol.position.set(-15, 30, 20); scene.add(sol);
+
+  cubo(46, .4, 30, 0x0b2f78, 2, -.2, 0, scene);                      // piso
+  const grade = new THREE.GridHelper(44, 22, 0x3a74d8, 0x1e4aa3); grade.position.set(2,.02,0); scene.add(grade);
+  cubo(.5, 1.2, 26, 0x9bb7ee, 19.5, .6, 0, scene);                   // mureta das docas
+  cubo(46, 3.5, .5, 0x5c86d8, 2, 1.75, -14.5, scene);                // parede de fundo
+
+  // porta-paletes
+  [-11,-8.2].forEach(z => { for (let x = -19; x <= -6; x += 4.2) {
+    const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+    [[-1.9,-.6],[1.9,-.6],[-1.9,.6],[1.9,.6]].forEach(([a,b]) => cubo(.14, 5, .14, 0xff8a1f, a, 2.5, b, g));
+    [.9, 2.6, 4.3].forEach(y => { cubo(4, .14, 1.4, 0xff8a1f, 0, y, 0, g);
+      for (let i = -1; i <= 1; i++) if (Math.random() > .25) cubo(1, .9 + Math.random()*.5, 1, [0xc9996b,0xb8854f,0xdcb98a][i+1], i*1.2, y + .55, 0, g); });
+  }});
+
+  // marcas das docas
+  [-9,-3,3,9].forEach(z => cubo(5, .04, 2.8, 0xfacc15, 16.8, .03, z, scene).material.opacity = .9);
+
+  for (let i = 0; i < 4; i++) { const c = criarCaminhao(); c.base = [ -9,-3,3,9 ][i]; c.group.position.set(23, 0, c.base); scene.add(c.group); caminhoes.push(c); }
+  empilhadeiras = [
+    criarEmpilhadeira([[-12,-5.5,1],[14,-5.5,0],[16,-5.5,0],[14,-5.5,0]], 5.5),
+    criarEmpilhadeira([[16,9,1],[14,11,0],[-10,11,0],[-10,3,0],[-10,11,0],[14,11,0]], 4.5)
+  ];
+  caixas = new THREE.Group(); scene.add(caixas);
+
+  new ResizeObserver(ajustar).observe(palco); ajustar();
+  let arrasto = null;
+  palco.addEventListener("pointerdown", e => { arrasto = e.clientX; palco.setPointerCapture(e.pointerId); });
+  palco.addEventListener("pointermove", e => { if (arrasto === null) return; alvoYaw -= (e.clientX - arrasto) * .008; arrasto = e.clientX; if (reduzMov) desenhar(); });
+  palco.addEventListener("pointerup", () => arrasto = null);
+  reduzMov ? desenhar() : requestAnimationFrame(loop);
+}
+
+function criarCaminhao(){
+  const g = new THREE.Group();
+  const carreta = cubo(7, 3, 3.2, 0xe9eff9, 0, 2.2, 0, g);
+  const faixa = cubo(7.05, .7, 3.25, 0xffffff, 0, 2.2, 0, g);
+  cubo(2.2, 2.3, 3, 0x1b3a7a, 4.6, 1.8, 0, g);
+  cubo(.1, 1, 2.4, 0x9fd0ff, 5.75, 2.4, 0, g);
+  [-2.4, 2.4, 4.6].forEach(x => [-1.5, 1.5].forEach(z => { const r = new THREE.Mesh(new THREE.CylinderGeometry(.55,.55,.4,8), mat(0x15171c)); r.rotation.x = Math.PI/2; r.position.set(x,.55,z); g.add(r); }));
+  return { group:g, faixa };
+}
+
+function criarEmpilhadeira(rota, vel){
+  const g = new THREE.Group();
+  cubo(1.6, .9, 2.4, 0xf5b400, 0, .75, 0, g); cubo(1.2, 1, 1, 0x2a2f3a, 0, 1.7, -.4, g);
+  cubo(.15, 2.4, .15, 0x333, -.5, 1.4, 1.3, g); cubo(.15, 2.4, .15, 0x333, .5, 1.4, 1.3, g);
+  cubo(.2, .1, 1.5, 0x333, -.45, .35, 2, g); cubo(.2, .1, 1.5, 0x333, .45, .35, 2, g);
+  [-.9,.9].forEach(x => [-.8,.8].forEach(z => { const r = new THREE.Mesh(new THREE.CylinderGeometry(.4,.4,.3,8), mat(0x15171c)); r.rotation.z = Math.PI/2; r.position.set(x,.4,z); g.add(r); }));
+  const carga = cubo(1.1, 1, 1.1, 0xc9996b, 0, .95, 2, g); carga.visible = false;
+  g.position.set(rota[0][0], 0, rota[0][1]); scene.add(g);
+  return { g, rota, i:1, vel, carga };
+}
+
+function moverEmpilhadeira(f, dt){
+  const [x,z,c] = f.rota[f.i], p = f.g.position, dx = x-p.x, dz = z-p.z, d = Math.hypot(dx,dz), passo = f.vel*dt;
+  if (d <= passo) { p.set(x,0,z); f.carga.visible = !!c; f.i = (f.i+1) % f.rota.length; return; }
+  p.x += dx/d*passo; p.z += dz/d*passo;
+  let a = Math.atan2(dx,dz), delta = a - f.g.rotation.y; delta = Math.atan2(Math.sin(delta), Math.cos(delta));
+  f.g.rotation.y += delta * Math.min(1, dt*6);
+}
+
+function loop(){
+  const dt = Math.min(relogio.getDelta(), .1), t = relogio.elapsedTime;
+  yaw += (alvoYaw - yaw) * .08; alvoYaw += dt * .04;
+  empilhadeiras.forEach(f => moverEmpilhadeira(f, dt));
+  caminhoes.forEach((c,i) => {
+    const ph = (t + i*5) % 26, desl = ph < 19 ? 0 : ph < 22.5 ? (ph-19)/3.5*30 : (1-(ph-22.5)/3.5)*30;
+    c.group.position.x = 23 + desl;
+  });
+  caixas.children.forEach(m => { if (m.userData.s < 1) { m.userData.s = Math.min(1, m.userData.s + dt*3); m.scale.setScalar(m.userData.s); } });
+  desenhar();
+  requestAnimationFrame(loop);
+}
+function desenhar(){
+  const r = 40;
+  camera.position.set(2 + Math.sin(yaw)*r, 26, Math.cos(yaw)*r*.9);
+  camera.lookAt(2, 0, 0);
+  renderer.render(scene, camera);
+}
+function ajustar(){
+  const w = palco.clientWidth, h = palco.clientHeight; if (!w || !h) return;
+  renderer.setSize(w, h); camera.aspect = w/h; camera.updateProjectionMatrix();
+  camera.fov = w < 600 ? 62 : 42; camera.updateProjectionMatrix(); if (reduzMov) desenhar();
+}
+
+function atualizarCena(lista){
+  while (caixas.children.length) caixas.remove(caixas.children[0]);
+  const recentes = [...lista].sort((a,b)=>paraData(b.data)-paraData(a.data)).slice(0, 48);
+  recentes.forEach((o, i) => {
+    const col = i % 8, lin = Math.floor(i / 8);
+    const m = cubo(1.15, 1.15, 1.15, new THREE.Color(COR[o.status] || "#999").getHex(), -4 + col*1.6, .6, -3 + lin*1.6, caixas);
+    m.userData.s = reduzMov ? 1 : 0; m.scale.setScalar(m.userData.s || .01);
+  });
+  const topT = contar(lista, o => o.transportadora).slice(0,4);
+  caminhoes.forEach((c,i) => {
+    const t = topT[i]; c.group.visible = !!t;
+    if (t) { const dom = STATUS.map(k => [k, lista.filter(o => o.transportadora === t[0] && o.status === k).length]).sort((a,b)=>b[1]-a[1])[0][0];
+      c.faixa.material.color.set(COR[dom]); }
+  });
+  document.getElementById("docas").innerHTML = topT.length
+    ? topT.map((t,i) => { const dom = STATUS.map(k => [k, lista.filter(o => o.transportadora === t[0] && o.status === k).length]).sort((a,b)=>b[1]-a[1])[0][0];
+        return `<span><i style="background:${COR[dom]}"></i>Doca ${i+1}: <b>${esc(t[0])}</b> · ${t[1]}</span>`; }).join("") +
+      (lista.length > 48 ? `<span style="opacity:.8">Triagem mostra as 48 mais recentes de ${lista.length}.</span>` : "")
+    : `<span style="opacity:.85">Sem ocorrências no período. As docas ficam vazias até o primeiro registro.</span>`;
+  if (reduzMov) desenhar();
+}
+
+/* ---------- ORQUESTRAÇÃO ---------- */
+function atualizar(){
+  const todos = carregar(), lista = filtrar(todos);
+  kpis(todos, lista); graficoDia(lista); graficoStatus(lista);
+  barras("chTransp", contar(lista, o => o.transportadora)); barras("chTipo", contar(lista, o => o.tipo));
+  if (renderer) atualizarCena(lista);
+}
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".seg button").forEach(x => x.classList.toggle("on", x === b));
+  periodo = +b.dataset.p; atualizar();
+}));
+window.addEventListener("storage", atualizar);
+
+try { montarCena(); } catch (e) { palco.innerHTML = `<p class="vazio" style="padding:24px">Seu navegador não conseguiu abrir o 3D (WebGL indisponível). Os indicadores continuam funcionando.</p>`; renderer = null; }
+atualizar();
+</script>
+</body>
+</html>
