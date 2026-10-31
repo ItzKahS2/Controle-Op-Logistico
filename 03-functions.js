@@ -60,6 +60,14 @@ function escapeHtml(valor) {
         .replaceAll("'", "&#39;");
 }
 
+/** Converte "1.234,56", "R$ 10" ou número para Number (0 se inválido). */
+function paraNumero(v) {
+    if (typeof v === "number") return isFinite(v) ? v : 0;
+    let s = String(v ?? "").replace(/[^\d,.-]/g, "");
+    if (s.includes(",")) s = s.replace(/\./g, "").replace(",", ".");
+    return Number(s) || 0;
+}
+
 function randomColor() {
     const r = Math.floor(Math.random() * 255);
     const g = Math.floor(Math.random() * 255);
@@ -95,7 +103,10 @@ function lerFormulario() {
         tipo: document.getElementById("tipo").value,
         status: document.getElementById("status").value,
         mtv: document.getElementById("mtv").value.trim(),
-        cliente: document.getElementById("cliente").value.trim()
+        cliente: document.getElementById("cliente").value.trim(),
+        desfecho: document.getElementById("desfecho").value,
+        valor: paraNumero(document.getElementById("valor").value),
+        perda: paraNumero(document.getElementById("perda").value)
     };
 }
 
@@ -106,6 +117,9 @@ function limparFormulario() {
     document.getElementById("status").value = "Pendente";
     document.getElementById("mtv").value = "";
     document.getElementById("cliente").value = "";
+    document.getElementById("desfecho").value = "Em andamento";
+    document.getElementById("valor").value = "";
+    document.getElementById("perda").value = "";
 }
 
 function sairDoModoEdicao() {
@@ -132,7 +146,16 @@ function adicionarOcorrencia(evento) {
         const indice = ocorrencias.findIndex(item => String(item.id) === String(idEmEdicao));
 
         if (indice !== -1) {
-            ocorrencias[indice] = { ...ocorrencias[indice], ...dados };
+            const atualizado = { ...ocorrencias[indice], ...dados };
+
+            // Desfecho "Entregue" = finalizada; qualquer outro volta para as ativas.
+            if (atualizado.desfecho === "Entregue") {
+                atualizado.dataFinalizacao = atualizado.dataFinalizacao || new Date().toLocaleString("pt-BR");
+            } else {
+                delete atualizado.dataFinalizacao;
+            }
+
+            ocorrencias[indice] = atualizado;
         }
 
         sairDoModoEdicao();
@@ -140,7 +163,8 @@ function adicionarOcorrencia(evento) {
         const novaOcorrencia = {
             id: Date.now(),
             ...dados,
-            data: new Date().toLocaleString("pt-BR")
+            data: new Date().toLocaleString("pt-BR"),
+            ...(dados.desfecho === "Entregue" ? { dataFinalizacao: new Date().toLocaleString("pt-BR") } : {})
         };
 
         ocorrencias.push(novaOcorrencia);
@@ -166,6 +190,9 @@ function editarOcorrencia(id) {
     document.getElementById("status").value = ocorrencia.status;
     document.getElementById("mtv").value = ocorrencia.mtv;
     document.getElementById("cliente").value = ocorrencia.cliente;
+    document.getElementById("desfecho").value = ocorrencia.desfecho || "Em andamento";
+    document.getElementById("valor").value = ocorrencia.valor || "";
+    document.getElementById("perda").value = ocorrencia.perda || "";
 
     idEmEdicao = id;
     document.getElementById("formCard").classList.add("editando");
@@ -177,13 +204,157 @@ function editarOcorrencia(id) {
    TABELA
 ================================================================== */
 
+/* ------------------------------------------------------------------
+   FILTROS
+------------------------------------------------------------------ */
+
+const filtros = { busca: "", status: "", tipo: "", desfecho: "" };
+
+/** Aba ativa da tabela: "ativas" ou "finalizadas". */
+let abaAtual = "ativas";
+
+/** Uma ocorrência está finalizada quando foi concluída com sucesso (desfecho Entregue). */
+const ehFinalizada = item => item.desfecho === "Entregue";
+
+function ocorrenciasDaAba() {
+    return ocorrencias.filter(item => ehFinalizada(item) === (abaAtual === "finalizadas"));
+}
+
+function definirAba(aba) {
+    abaAtual = aba;
+    renderizarTabela();
+}
+
+const STATUS_ROTULO = { Pendente: "Pendente", Reentregar: "Reentregar", DarEntrada: "Dar entrada" };
+
+const DESFECHO_CLASSE = {
+    "Em andamento": "des-andamento",
+    "Entregue": "des-entregue",
+    "Perdida": "des-perdida",
+    "Avariada": "des-avariada",
+    "Devolvida": "des-devolvida"
+};
+
+/** Minúsculo e sem acento, para a busca ignorar "Devolução" x "devolucao". */
+const normalizar = texto => String(texto ?? "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+function ocorrenciasFiltradas() {
+    const busca = normalizar(filtros.busca).trim();
+
+    return ocorrenciasDaAba().filter(item => {
+        if (filtros.status && item.status !== filtros.status) return false;
+        if (filtros.tipo && item.tipo !== filtros.tipo) return false;
+        if (filtros.desfecho && (item.desfecho || "Em andamento") !== filtros.desfecho) return false;
+        if (busca && !normalizar([item.nf, item.transportadora, item.cliente, item.mtv].join(" ")).includes(busca)) return false;
+        return true;
+    });
+}
+
+function filtrosAtivos() {
+    return Object.values(filtros).some(Boolean);
+}
+
+/** Muda um filtro e redesenha (também usado pelos anéis do panorama). */
+function definirFiltro(campo, valor) {
+    filtros[campo] = valor;
+    renderizarTabela();
+}
+
+function limparFiltros() {
+    Object.keys(filtros).forEach(chave => filtros[chave] = "");
+    document.getElementById("filtroBusca").value = "";
+    document.getElementById("filtroDesfecho").value = "";
+    renderizarTabela();
+}
+
+function atualizarFiltrosUI(visiveis) {
+    const chips = document.getElementById("chipsStatus");
+    if (!chips) return;
+
+    const base = ocorrenciasDaAba();
+    const qtdFinalizadas = ocorrencias.filter(ehFinalizada).length;
+
+    document.getElementById("abas").innerHTML = [
+        ["ativas", "Ativas", ocorrencias.length - qtdFinalizadas, "bi-hourglass-split"],
+        ["finalizadas", "Finalizadas", qtdFinalizadas, "bi-check-circle-fill"]
+    ].map(([chave, rotulo, qtd, icone]) =>
+        `<button type="button" role="tab" class="aba${abaAtual === chave ? " on" : ""}" data-aba="${chave}"
+            aria-selected="${abaAtual === chave}"><i class="bi ${icone}"></i>${rotulo} <b>${qtd}</b></button>`
+    ).join("");
+
+    const opcoes = [["", "Todos", base.length]].concat(
+        Object.keys(STATUS_ROTULO).map(chave =>
+            [chave, STATUS_ROTULO[chave], base.filter(i => i.status === chave).length])
+    );
+
+    chips.innerHTML = opcoes.map(([valor, rotulo, qtd]) => {
+        const ativo = filtros.status === valor;
+        return `<button type="button" class="chip chip-${valor || "Todos"}${ativo ? " on" : ""}"
+                    data-status="${valor}" aria-pressed="${ativo}"><i></i>${rotulo} <b>${qtd}</b></button>`;
+    }).join("");
+
+    // Inclui no filtro de tipo qualquer tipo vindo de planilhas importadas.
+    const seletorTipo = document.getElementById("filtroTipo");
+    const existentes = new Set([...seletorTipo.options].map(o => o.value));
+    ocorrencias.forEach(item => {
+        if (item.tipo && !existentes.has(item.tipo)) {
+            seletorTipo.add(new Option(item.tipo, item.tipo));
+            existentes.add(item.tipo);
+        }
+    });
+    seletorTipo.value = filtros.tipo;
+
+    document.getElementById("contadorFiltro").textContent =
+        `Mostrando ${visiveis} de ${base.length}`;
+    document.getElementById("limparFiltros").hidden = !filtrosAtivos();
+}
+
+function iniciarFiltros() {
+    document.getElementById("filtroBusca")
+        .addEventListener("input", e => definirFiltro("busca", e.target.value));
+    document.getElementById("filtroTipo")
+        .addEventListener("change", e => definirFiltro("tipo", e.target.value));
+    document.getElementById("filtroDesfecho")
+        .addEventListener("change", e => definirFiltro("desfecho", e.target.value));
+    document.getElementById("limparFiltros")
+        .addEventListener("click", limparFiltros);
+
+    document.getElementById("abas").addEventListener("click", e => {
+        const aba = e.target.closest(".aba");
+        if (aba) definirAba(aba.dataset.aba);
+    });
+
+    document.getElementById("chipsStatus").addEventListener("click", e => {
+        const chip = e.target.closest(".chip");
+        if (!chip) return;
+        const valor = chip.dataset.status;
+        definirFiltro("status", valor === filtros.status ? "" : valor);
+    });
+}
+
 function renderizarTabela() {
     const tabela = document.getElementById("tabelaOcorrencias");
     tabela.innerHTML = "";
 
-    ocorrencias.forEach(item => {
+    const lista = ocorrenciasFiltradas();
+    atualizarFiltrosUI(lista.length);
+
+    if (lista.length === 0) {
+        let vazio = "Nenhuma ocorrência com esses filtros. Use “Limpar filtros” para ver todas.";
+        if (ocorrenciasDaAba().length === 0) {
+            vazio = abaAtual === "finalizadas"
+                ? "Nenhuma ocorrência finalizada ainda. Use “Finalizar” nas que foram concluídas com sucesso."
+                : "Nenhuma ocorrência ativa. Preencha o formulário ao lado para começar.";
+        }
+        tabela.innerHTML = `<tr><td colspan="9" class="tabela-vazia">${vazio}</td></tr>`;
+        return;
+    }
+
+    lista.forEach(item => {
         const linha = document.createElement("tr");
         linha.dataset.id = item.id;
+        linha.className = `linha-${item.status}`;
 
         linha.innerHTML = `
             <td>${escapeHtml(item.nf)}</td>
@@ -191,10 +362,18 @@ function renderizarTabela() {
             <td>${escapeHtml(item.tipo)}</td>
             <td>
                 <span class="status ${escapeHtml(item.status)}">
-                    ${escapeHtml(item.status)}
+                    ${escapeHtml(STATUS_ROTULO[item.status] || item.status)}
                 </span>
             </td>
-            <td>${escapeHtml(item.data)}</td>
+            <td>
+                <span class="status ${DESFECHO_CLASSE[item.desfecho] || "des-andamento"}">
+                    ${escapeHtml(item.desfecho || "Em andamento")}
+                </span>
+            </td>
+            <td>
+                ${escapeHtml(item.data)}
+                ${item.dataFinalizacao ? `<small class="data-final"><i class="bi bi-check2-circle"></i> ${escapeHtml(item.dataFinalizacao)}</small>` : ""}
+            </td>
             <td>
                 <button type="button" class="deleteBtn" onclick="deletarOcorrencia('${item.id}')">
                     <i class="bi bi-trash-fill"></i>
@@ -206,6 +385,11 @@ function renderizarTabela() {
                     <i class="bi bi-pencil-square"></i>
                     Editar
                 </button>
+            </td>
+            <td>
+                ${ehFinalizada(item)
+                    ? `<button type="button" class="reabrirBtn" onclick="reabrirOcorrencia('${item.id}')"><i class="bi bi-arrow-counterclockwise"></i> Reabrir</button>`
+                    : `<button type="button" class="finalBtn" onclick="finalizarOcorrencia('${item.id}')"><i class="bi bi-check-lg"></i> Finalizar</button>`}
             </td>
         `;
 
@@ -235,6 +419,35 @@ function deletarOcorrencia(id) {
     renderizarTabela();
     mostrarUndo("Ocorrência removida.");
 }
+
+/* ------------------------------------------------------------------
+   FINALIZAR / REABRIR
+   Finalizar marca o desfecho como "Entregue" e move a ocorrência para
+   a aba Finalizadas. Reabrir devolve para "Em andamento". Os dois podem
+   ser desfeitos pelo aviso de desfazer.
+------------------------------------------------------------------ */
+
+function alterarConclusao(id, finalizar) {
+    const item = ocorrencias.find(o => String(o.id) === String(id));
+    if (!item) return;
+
+    backupOcorrencias = ocorrencias.map(o => ({ ...o }));
+
+    if (finalizar) {
+        item.desfecho = "Entregue";
+        item.dataFinalizacao = new Date().toLocaleString("pt-BR");
+    } else {
+        item.desfecho = "Em andamento";
+        delete item.dataFinalizacao;
+    }
+
+    salvarLocalStorage();
+    renderizarTabela();
+    mostrarUndo(finalizar ? "Ocorrência finalizada com sucesso." : "Ocorrência reaberta.");
+}
+
+const finalizarOcorrencia = id => alterarConclusao(id, true);
+const reabrirOcorrencia = id => alterarConclusao(id, false);
 
 function delAll() {
     if (ocorrencias.length === 0) {
@@ -302,7 +515,11 @@ function exportXls() {
         "TIPO": item.tipo,
         "DATA": item.data,
         "AÇÃO": item.status,
-        "MOTIVO": item.mtv
+        "MOTIVO": item.mtv,
+        "DESFECHO": item.desfecho || "Em andamento",
+        "VALOR": item.valor || 0,
+        "PERDA": item.perda || 0,
+        "FINALIZADA EM": item.dataFinalizacao || ""
     }));
 
     const planilha = XLSX.utils.json_to_sheet(dadosFormatados);
@@ -338,6 +555,11 @@ function importarPlanilha(evento) {
                 tipo: item.TIPO || "",
                 status: item.AÇÃO || "Pendente",
                 mtv: item.MOTIVO || "",
+                desfecho: item.DESFECHO || "Em andamento",
+                valor: paraNumero(item.VALOR),
+                perda: paraNumero(item.PERDA),
+                dataFinalizacao: item["FINALIZADA EM"]
+                    || (item.DESFECHO === "Entregue" ? new Date().toLocaleString("pt-BR") : undefined),
                 data: item.DATA || new Date().toLocaleString("pt-BR")
             });
         });
@@ -361,6 +583,7 @@ function importarPlanilha(evento) {
 ================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
+    iniciarFiltros();
     renderizarTabela();
 
     document.getElementById("ocorrenciaForm")
