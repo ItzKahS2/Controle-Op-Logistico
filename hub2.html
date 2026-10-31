@@ -9,7 +9,7 @@
 
     <!-- Login precisa ser validado antes do conteúdo ser desenhado,
          por isso o script e a checagem ficam aqui no <head>. -->
-    <script src=".js"></script>
+    <script src="mainpage.js"></script>
     <script>exigirLogin();</script>
 </head>
 
@@ -29,13 +29,25 @@
         <a class="contBtn" href="contagem.html" title="Contagem">
             <i class="bi bi-calculator"></i>
         </a>
-        <a class="mainBtn" href="hub1.html" title="Início">
+        <a class="mainBtn" href="mainpage.html" title="Início">
             <i class="bi bi-house-door"></i>
+        </a>
+        <a class="painelBtn" href="dashboard.html" title="Painel de indicadores e armazém 3D">
+            <i class="bi bi-bar-chart-line-fill"></i>
         </a>
         <button type="button" class="logoutBtn" onclick="encerrarSessao()" title="Sair">
             <i class="bi bi-box-arrow-right"></i>
         </button>
     </nav>
+
+    <section class="panorama" aria-labelledby="tituloPanorama">
+        <div class="panorama-topo">
+            <h2 id="tituloPanorama">Panorama por tipo de ocorrência</h2>
+            <p>Cada anel mostra como as ocorrências de um tipo terminaram. Preencha Desfecho, Valor e Perda ao registrar.</p>
+        </div>
+        <div class="resumo-aneis" id="resumoAneis"></div>
+        <div class="aneis" id="aneisTipos"></div>
+    </section>
 
     <div class="container">
 
@@ -59,6 +71,8 @@
                     <option>Entrega não realizada</option>
                     <option>Veículo com problema</option>
                     <option>Reagendamento</option>
+                    <option>Avaria na carga</option>
+                    <option>Carga perdida</option>
                 </select>
 
                 <select id="status">
@@ -66,6 +80,17 @@
                     <option value="Reentregar">Reentregar</option>
                     <option value="DarEntrada">Dar Entrada</option>
                 </select>
+
+                <select id="desfecho" aria-label="Desfecho">
+                    <option value="Em andamento">Desfecho: em andamento</option>
+                    <option value="Entregue">Desfecho: entregue</option>
+                    <option value="Perdida">Desfecho: perdida</option>
+                    <option value="Avariada">Desfecho: avariada</option>
+                    <option value="Devolvida">Desfecho: devolvida</option>
+                </select>
+
+                <input type="text" inputmode="decimal" id="valor" placeholder="Valor da NF (R$)">
+                <input type="text" inputmode="decimal" id="perda" placeholder="Perda estimada (R$)">
 
                 <button type="button" class="importBtn" onclick="document.getElementById('importarXls').click()">
                     <i class="bi bi-file-earmark-arrow-up"></i>
@@ -95,7 +120,35 @@
 
             <div class="topo">
                 <h2>Ocorrências</h2>
+                <span id="contadorFiltro" class="contador" aria-live="polite"></span>
             </div>
+
+            <div class="abas" id="abas" role="tablist" aria-label="Situação das ocorrências"></div>
+
+            <div class="filtros">
+                <input type="search" id="filtroBusca" placeholder="Buscar por NF, cliente, transportadora ou motivo" aria-label="Buscar ocorrências">
+                <select id="filtroTipo" aria-label="Filtrar por tipo">
+                    <option value="">Todos os tipos</option>
+                    <option>Devolução parcial</option>
+                    <option>Entrega não realizada</option>
+                    <option>Veículo com problema</option>
+                    <option>Reagendamento</option>
+                    <option>Avaria na carga</option>
+                    <option>Carga perdida</option>
+                </select>
+                <select id="filtroDesfecho" aria-label="Filtrar por desfecho">
+                    <option value="">Todos os desfechos</option>
+                    <option value="Em andamento">Em andamento</option>
+                    <option value="Entregue">Entregue</option>
+                    <option value="Perdida">Perdida</option>
+                    <option value="Avariada">Avariada</option>
+                    <option value="Devolvida">Devolvida</option>
+                </select>
+                <button type="button" id="limparFiltros" class="limparFiltros" hidden>
+                    <i class="bi bi-x-circle"></i> Limpar filtros
+                </button>
+            </div>
+            <div class="chips" id="chipsStatus" role="group" aria-label="Filtrar por status"></div>
 
             <table>
                 <thead class="tableHead">
@@ -104,9 +157,11 @@
                         <th>Transportadora</th>
                         <th>Ocorrência</th>
                         <th>Status</th>
+                        <th>Desfecho</th>
                         <th>Data</th>
                         <th>Excluir</th>
                         <th>Editar</th>
+                        <th>Concluir</th>
                     </tr>
                 </thead>
                 <tbody id="tabelaOcorrencias"></tbody>
@@ -118,5 +173,6 @@
 
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="03-functions.js"></script>
+    <script src="05-aneis.js"></script>
 </body>
 </html>
